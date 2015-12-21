@@ -7,8 +7,7 @@ url = 'https://www2.uvo.gov.sk/evestnik?p_p_id=evestnik_WAR_eVestnikPortlets&p_p
 
 def send_message(text)
   payload = {text: text, channel: "#general", username: "uvobot", icon_emoji: ":mag_right:"}
-  data = payload.to_json
-  Curl.post(ENV['UVOBOT_SLACK_WEBHOOK'], data)
+  Curl.post(ENV['UVOBOT_SLACK_WEBHOOK'], payload.to_json)
 end
 
 today = Time.now.strftime('%d.%m.%Y')
