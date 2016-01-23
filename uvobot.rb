@@ -10,18 +10,15 @@ def send_message(text)
   Curl.post(ENV['UVOBOT_SLACK_WEBHOOK'], payload.to_json)
 end
 
-def check_issue_today
+def issue_ready?
   urlTodayCheck = 'https://www2.uvo.gov.sk/evestnik/-/vestnik/aktual'
-  todayH1 = Regexp.new(Time.now.strftime('/%Y - %-d.%-m.%Y '))
+  identifier = Time.now.strftime('/%Y - %-d.%-m.%Y ')
   html = Curl.get(urlTodayCheck).body
   doc = Nokogiri::HTML.parse(html)
-  if todayH1.match(doc.css('h1')[1].inner_html)
-    return true
-  end
-  return false
+  return doc.css('h1')[1].inner_html.include?(identifier)
 end
 
-if !check_issue_today
+if !issue_ready?
   send_message('Fíha, dnes vestník nevyšiel?')
   exit
 end
