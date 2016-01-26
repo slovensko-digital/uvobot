@@ -5,5 +5,9 @@ ruby '2.2.2'
 gem 'nokogiri'
 gem 'curb'
 gem 'dotenv'
-gem 'rspec'
+
+group :development do
+  gem 'rspec'
+end
+
 
