@@ -11,14 +11,13 @@ class Uvobot
   end
 
   def run
-     if @scraper.issue_ready?
-       page_info, announcements = @scraper.announcements
-       @notifier.announcements_found(page_info, announcements)
-     else
-       @notifier.new_issue_not_published
-     end
+    if @scraper.issue_ready?
+      page_info, announcements = @scraper.announcements
+      @notifier.announcements_found(page_info, announcements)
+    else
+      @notifier.new_issue_not_published
+    end
   end
 end
 
-Uvobot.new(SlackNotifier.new(ENV.fetch('UVOBOT_SLACK_WEBHOOK')),
-           UvoScraper.new).run
+Uvobot.new(SlackNotifier.new(ENV.fetch('UVOBOT_SLACK_WEBHOOK')), UvoScraper.new).run

@@ -16,7 +16,7 @@ class UvoScraper
   def announcements
     today = Time.now.strftime('%d.%m.%Y')
     # cpv=72 filters out only IT related announcements
-    search_query = { cpv: 72, datumZverejneniaOd: today, datumZverejneniaDo: today}
+    search_query = { cpv: 72, datumZverejneniaOd: today, datumZverejneniaDo: today }
     html = Curl.post(SEARCH_URL, search_query).body
     parse_page(html)
   end
@@ -33,7 +33,7 @@ class UvoScraper
       customer = a.css('.ozn2').text.strip
       description = a.css('.ozn3').text.strip
 
-      announcements << {link: {text: link.text, href: link['href']}, customer: customer, description: description}
+      announcements << { link: { text: link.text, href: link['href'] }, customer: customer, description: description }
     end
 
     [page_info, announcements]

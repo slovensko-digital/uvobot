@@ -14,7 +14,7 @@ class SlackNotifier
     send_header_message(page, announcements)
 
     announcements.each do |a|
-     send_message("<#{a[:link][:href]}|#{a[:link][:text]}>: *#{a[:customer]}* #{a[:description]}")
+      send_message("<#{a[:link][:href]}|#{a[:link][:text]}>: *#{a[:customer]}* #{a[:description]}")
     end
   end
 
