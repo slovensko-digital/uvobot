@@ -11,7 +11,7 @@ describe SlackNotifier do
      it "sends correct payload to slack" do
        notifier.new_issue_not_published
        expect(WebMock).to have_requested(:post, "https://hooks.slack.com").
-                            with(:body => '{"text":"*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*","channel":"#general","username":"uvobot","icon_emoji":":mag_right:"}')
+                            with(body: '{"text":"*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*","channel":"#general","username":"uvobot","icon_emoji":":mag_right:"}')
      end
   end
 
@@ -25,9 +25,9 @@ describe SlackNotifier do
         notifier.matching_announcements("Found 1 record", announcements)
 
         expect(WebMock).to have_requested(:post, "https://hooks.slack.com").
-                             with(:body => '{"text":"Našiel som niečo nové na ÚVO! (Found 1 record)","channel":"#general","username":"uvobot","icon_emoji":":mag_right:"}')
+                             with(body: '{"text":"Našiel som niečo nové na ÚVO! (Found 1 record)","channel":"#general","username":"uvobot","icon_emoji":":mag_right:"}')
         expect(WebMock).to have_requested(:post, "https://hooks.slack.com").
-                             with(:body => '{"text":"<href 1|text 1>: *customer 1* desc 1","channel":"#general","username":"uvobot","icon_emoji":":mag_right:"}')
+                             with(body: '{"text":"<href 1|text 1>: *customer 1* desc 1","channel":"#general","username":"uvobot","icon_emoji":":mag_right:"}')
       end
     end
 
@@ -36,7 +36,7 @@ describe SlackNotifier do
         notifier.matching_announcements("", [])
 
         expect(WebMock).to have_requested(:post, "https://hooks.slack.com").
-                             with(:body => '{"text":"Dnes som nenašiel žiadne nové IT zákazky.","channel":"#general","username":"uvobot","icon_emoji":":mag_right:"}')
+                             with(body: '{"text":"Dnes som nenašiel žiadne nové IT zákazky.","channel":"#general","username":"uvobot","icon_emoji":":mag_right:"}')
       end
     end
   end

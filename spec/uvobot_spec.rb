@@ -5,7 +5,7 @@ require "./uvo_scraper"
 
 describe Uvobot do
   let(:notifier) { SlackNotifier.new("https://hooks.slack.com") }
-  let (:scraper) { UvoScraper.new }
+  let(:scraper) { UvoScraper.new }
   let(:bot) { Uvobot.new(notifier, scraper) }
 
   before :each do
