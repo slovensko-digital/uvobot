@@ -8,6 +8,8 @@ gem 'dotenv'
 
 group :development do
   gem 'rspec'
+  gem 'webmock'
+  gem 'timecop'
 end
 
 
