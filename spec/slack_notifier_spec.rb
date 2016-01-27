@@ -8,17 +8,17 @@ describe SlackNotifier do
   let(:notifier) { SlackNotifier.new("https://hooks.slack.com") }
 
   describe ".new_issue_not_published" do
-     it "sends correct payload to slack" do
-       notifier.new_issue_not_published
-       expect(WebMock).to have_requested(:post, "https://hooks.slack.com").
-                            with(body: '{"text":"*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*","channel":"#general","username":"uvobot","icon_emoji":":mag_right:"}')
-     end
+    it "sends correct payload to slack" do
+      notifier.new_issue_not_published
+      expect(WebMock).to have_requested(:post, "https://hooks.slack.com").
+                           with(body: '{"text":"*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*","channel":"#general","username":"uvobot","icon_emoji":":mag_right:"}')
+    end
   end
 
   describe ".matching_announcements" do
-    let(:announcements) {[
-      { link: { text: "text 1", href: "href 1" }, customer: "customer 1", description: "desc 1" }
-    ]}
+    let(:announcements) do
+      [{ link: { text: "text 1", href: "href 1" }, customer: "customer 1", description: "desc 1" }]
+    end
 
     context "announcements found" do
       it "sends correct payloads to slack" do

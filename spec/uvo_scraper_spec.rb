@@ -7,7 +7,7 @@ describe UvoScraper do
   describe ".issue_ready?" do
     it "returns true if new issue is present" do
       stub_request(:any, UvoScraper::NEW_ISSUE_URL).
-        to_return(body: File.new('./spec/support/fixtures/new_issue_uvo_page.html'), :status => 200)
+        to_return(body: File.new("./spec/support/fixtures/new_issue_uvo_page.html"), status: 200)
 
       Timecop.freeze(Date.new(2016, 1, 25)) do
         expect(scraper.issue_ready?).to eq true
@@ -16,7 +16,8 @@ describe UvoScraper do
 
     it "returns false when new issue is missing" do
       stub_request(:any, UvoScraper::NEW_ISSUE_URL).
-        to_return(body: File.new('./spec/support/fixtures/new_issue_missing_uvo_page.html'), :status => 200)
+        to_return(body: File.new("./spec/support/fixtures/new_issue_missing_uvo_page.html"),
+                  status: 200)
 
       Timecop.freeze(Date.new(2016, 1, 25)) do
         expect(scraper.issue_ready?).to eq false
@@ -27,7 +28,7 @@ describe UvoScraper do
   describe ".announcements" do
     it "returns parsed announcements and page info" do
       stub_request(:any, UvoScraper::SEARCH_URL).
-        to_return(body: File.new('./spec/support/fixtures/announcements.html'), :status => 200)
+        to_return(body: File.new("./spec/support/fixtures/announcements.html"), status: 200)
 
       page_info, announcements = scraper.announcements
 
