@@ -1,7 +1,6 @@
 require "nokogiri"
 
 class UvoParser
-
   def initialize(html)
     @doc = Nokogiri::HTML(html)
   end
@@ -21,7 +20,7 @@ class UvoParser
   end
 
   def parse_page_info
-   @doc.css(".search-results").first.text.strip
+    @doc.css(".search-results").first.text.strip
   end
 
   def parse_issue_header

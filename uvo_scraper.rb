@@ -5,7 +5,7 @@ class UvoScraper
   NEW_ISSUE_URL = "https://www2.uvo.gov.sk/evestnik/-/vestnik/aktual".freeze
   IT_CONTRACTS_CODE = 72
 
-  def initialize(parser_class, release_date, html_client=Curl)
+  def initialize(parser_class, release_date, html_client = Curl)
     @parser = parser_class
     @html_client = html_client
     @release_date = release_date

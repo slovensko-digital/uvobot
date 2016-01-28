@@ -9,16 +9,16 @@ class CurlDouble
 
   attr_accessor :stubbed_get_body, :stubbed_post_body
 
-  def initialize(get="", post="")
+  def initialize(get = "", post = "")
     @stubbed_get_body = get
     @stubbed_post_body = post
   end
 
-  def get(url, params={}, &block)
+  def get(url, params = {}, &block)
     Response.new(stubbed_get_body)
   end
 
-  def post(url, params={}, &block)
+  def post(url, params = {}, &block)
     Response.new(stubbed_post_body)
   end
 end

@@ -2,7 +2,7 @@ require "json"
 require "curb"
 
 class SlackNotifier
-  def initialize(slack_webhook, http_client=Curl)
+  def initialize(slack_webhook, http_client = Curl)
     @slack_webhook = slack_webhook
     @http_client = http_client
   end
