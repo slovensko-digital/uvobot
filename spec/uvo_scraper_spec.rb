@@ -1,29 +1,34 @@
 require "spec_helper"
-require "./uvo_scraper"
-require "./uvo_parser"
-require "support/curl_double"
+require "./lib/uvo_scraper"
+require "./lib/uvo_parser"
 
 describe UvoScraper do
-  let(:curl_double) { CurlDouble.new }
-  let(:scraper) { UvoScraper.new(UvoParser, Date.new(2016, 1, 28), curl_double) }
+  let(:curl_double) { double }
+  let(:scraper) { UvoScraper.new(UvoParser, curl_double) }
 
   describe ".issue_ready?" do
     it "returns true if new issue is present" do
-      curl_double.stubbed_get_body = File.open("./spec/support/fixtures/new_issue_uvo_page.html")
-      expect(scraper.issue_ready?).to eq true
+      allow(curl_double).to receive_message_chain("get.body") do
+        File.open("./spec/support/fixtures/new_issue_uvo_page.html").read
+      end
+      expect(scraper.issue_ready?(Date.new(2016, 1, 28))).to eq true
     end
 
     it "returns false when new issue is missing" do
-      curl_double.stubbed_get_body = File.open("./spec/support/fixtures/new_issue_uvo_page.html")
-      scraper = UvoScraper.new(UvoParser, Date.new(2016, 1, 29), curl_double)
-      expect(scraper.issue_ready?).to eq false
+      allow(curl_double).to receive_message_chain("get.body") do
+        File.open("./spec/support/fixtures/new_issue_uvo_page.html").read
+      end
+      scraper = UvoScraper.new(UvoParser, curl_double)
+      expect(scraper.issue_ready?(Date.new(2016, 1, 29))).to eq false
     end
   end
 
   describe ".announcements" do
     it "returns parsed announcements and page info" do
-      curl_double.stubbed_post_body = File.open("./spec/support/fixtures/announcements.html")
-      page_info, announcements = scraper.get_announcements
+      allow(curl_double).to receive_message_chain("post.body") do
+        File.open("./spec/support/fixtures/announcements.html").read
+      end
+      page_info, announcements = scraper.get_announcements(Date.new(2016, 1, 29))
 
       expect(page_info).to eq "Zobrazujem 5 záznamov."
       expect(announcements.count).to eq 5

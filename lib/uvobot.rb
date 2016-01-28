@@ -4,9 +4,9 @@ class Uvobot
     @scraper = scraper
   end
 
-  def run
-    if @scraper.issue_ready?
-      notify_announcements
+  def run(release_date)
+    if @scraper.issue_ready?(release_date)
+      notify_announcements(release_date)
     else
       @notifier.new_issue_not_published
     end
@@ -14,8 +14,8 @@ class Uvobot
 
   private
 
-  def notify_announcements
-    page_info, announcements = @scraper.get_announcements
+  def notify_announcements(release_date)
+    page_info, announcements = @scraper.get_announcements(release_date)
 
     if announcements.count > 0
       @notifier.matching_announcements_found(page_info, announcements)

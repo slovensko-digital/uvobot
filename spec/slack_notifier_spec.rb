@@ -1,9 +1,8 @@
 require "spec_helper"
-require "./slack_notifier"
-require "support/curl_double"
+require "./lib/slack_notifier"
 
 describe SlackNotifier do
-  let(:curl_double) { CurlDouble.new }
+  let(:curl_double) { double }
   let(:notifier) { SlackNotifier.new("slack.com", curl_double) }
 
   describe ".new_issue_not_published" do
