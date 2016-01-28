@@ -7,9 +7,7 @@ describe SlackNotifier do
 
   describe ".new_issue_not_published" do
     it "sends correct payload to slack" do
-      expect(curl_double)
-        .to receive(:post).with("slack.com",
-                                payload_json_string("*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*"))
+      expect(curl_double).to receive(:post).with(*params("*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*"))
       notifier.new_issue_not_published
     end
   end
@@ -20,24 +18,22 @@ describe SlackNotifier do
     end
 
     it "sends correct payloads to slack" do
-      expect(curl_double)
-        .to receive(:post).with("slack.com",
-                                payload_json_string("Našiel som niečo nové na ÚVO! (Found 1 record)"))
-      expect(curl_double)
-        .to receive(:post).with("slack.com",
-                                payload_json_string("<href 1|text 1>: *customer 1* desc 1"))
+      expect(curl_double).to receive(:post).with(*params("Našiel som niečo nové na ÚVO! (Found 1 record)"))
+      expect(curl_double).to receive(:post).with(*params("<href 1|text 1>: *customer 1* desc 1"))
       notifier.matching_announcements_found("Found 1 record", announcements)
     end
   end
 
   describe ".no_announcements_found" do
     it "sends correct payloads to slack" do
-      expect(curl_double)
-        .to receive(:post).with("slack.com",
-                                payload_json_string("Dnes som nenašiel žiadne nové IT zákazky."))
+      expect(curl_double).to receive(:post).with(*params("Dnes som nenašiel žiadne nové IT zákazky."))
       notifier.no_announcements_found
     end
   end
+end
+
+def params(message)
+  ["slack.com", payload_json_string(message)]
 end
 
 def payload_json_string(message)

@@ -10,5 +10,3 @@ group :development do
   gem "rspec"
   gem "rubocop"
 end
-
-
