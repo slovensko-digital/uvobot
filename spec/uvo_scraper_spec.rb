@@ -9,14 +9,14 @@ describe UvoScraper do
   describe ".issue_ready?" do
     it "returns true if new issue is present" do
       allow(curl_double).to receive_message_chain("get.body") do
-        File.open("./spec/support/fixtures/new_issue_uvo_page.html").read
+        File.read("./spec/support/fixtures/new_issue_uvo_page.html")
       end
       expect(scraper.issue_ready?(Date.new(2016, 1, 28))).to eq true
     end
 
     it "returns false when new issue is missing" do
       allow(curl_double).to receive_message_chain("get.body") do
-        File.open("./spec/support/fixtures/new_issue_uvo_page.html").read
+        File.read("./spec/support/fixtures/new_issue_uvo_page.html")
       end
       scraper = UvoScraper.new(UvoParser, curl_double)
       expect(scraper.issue_ready?(Date.new(2016, 1, 29))).to eq false
@@ -26,7 +26,7 @@ describe UvoScraper do
   describe ".announcements" do
     it "returns parsed announcements and page info" do
       allow(curl_double).to receive_message_chain("post.body") do
-        File.open("./spec/support/fixtures/announcements.html").read
+        File.read("./spec/support/fixtures/announcements.html")
       end
       page_info, announcements = scraper.get_announcements(Date.new(2016, 1, 29))
 
