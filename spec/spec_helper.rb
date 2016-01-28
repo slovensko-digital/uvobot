@@ -94,9 +94,3 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
-
-# ignore requests to outer world
-require "webmock/rspec"
-WebMock.disable_net_connect!(allow_localhost: true)
-
-require "timecop"

@@ -1,6 +1,3 @@
-require "./slack_notifier"
-require "./uvo_scraper"
-
 class Uvobot
   def initialize(notifier, scraper)
     @notifier = notifier
@@ -9,10 +6,21 @@ class Uvobot
 
   def run
     if @scraper.issue_ready?
-      page_info, announcements = @scraper.announcements
-      @notifier.matching_announcements(page_info, announcements)
+      notify_announcements
     else
       @notifier.new_issue_not_published
+    end
+  end
+
+  private
+
+  def notify_announcements
+    page_info, announcements = @scraper.get_announcements
+
+    if announcements.count > 0
+      @notifier.matching_announcements_found(page_info, announcements)
+    else
+      @notifier.no_announcements_found
     end
   end
 end
