@@ -1,7 +1,7 @@
 require "spec_helper"
 require "./lib/slack_notifier"
 
-describe SlackNotifier do
+RSpec.describe SlackNotifier do
   let(:curl_double) { double }
   let(:notifier) { SlackNotifier.new("slack.com", curl_double) }
 

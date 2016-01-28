@@ -1,8 +1,9 @@
 require "spec_helper"
 require "./lib/uvo_scraper"
 require "./lib/uvo_parser"
+require "date"
 
-describe UvoScraper do
+RSpec.describe UvoScraper do
   let(:curl_double) { double }
   let(:scraper) { UvoScraper.new(UvoParser, curl_double) }
 

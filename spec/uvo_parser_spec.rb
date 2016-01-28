@@ -1,7 +1,7 @@
 require "spec_helper"
 require "./lib/uvo_parser"
 
-describe UvoParser do
+RSpec.describe UvoParser do
   let(:parser) { UvoParser }
 
   describe ".parse_announcements" do

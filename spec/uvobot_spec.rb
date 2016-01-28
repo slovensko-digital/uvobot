@@ -3,7 +3,7 @@ require "./lib/uvobot"
 require "./lib/slack_notifier"
 require "./lib/uvo_scraper"
 
-describe Uvobot do
+RSpec.describe Uvobot do
   describe ".run" do
     let(:notifier) { double }
     let(:scraper) { double }

@@ -1,6 +1,6 @@
 require "dotenv"
 require "date"
-require "lib/uvobot"
+require "./lib/uvobot"
 require "./lib/slack_notifier"
 require "./lib/uvo_scraper"
 require "./lib/uvo_parser"
