@@ -1,5 +1,5 @@
-require "json"
-require "curb"
+require 'json'
+require 'curb'
 
 class SlackNotifier
   def initialize(slack_webhook, http_client = Curl)
@@ -8,7 +8,7 @@ class SlackNotifier
   end
 
   def new_issue_not_published
-    send_message("*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*")
+    send_message('*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*')
   end
 
   def matching_announcements_found(page, announcements)
@@ -20,7 +20,7 @@ class SlackNotifier
   end
 
   def no_announcements_found
-    send_message("Dnes som nenašiel žiadne nové IT zákazky.")
+    send_message('Dnes som nenašiel žiadne nové IT zákazky.')
   end
 
   private
@@ -30,10 +30,11 @@ class SlackNotifier
   end
 
   def payload(text)
-    { text: text,
-      channel: "#general",
-      username: "uvobot",
-      icon_emoji: ":mag_right:"
+    {
+      text: text,
+      channel: '#general',
+      username: 'uvobot',
+      icon_emoji: ':mag_right:'
     }.to_json
   end
 end

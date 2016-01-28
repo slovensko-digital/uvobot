@@ -1,15 +1,15 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "nokogiri"
-gem "curb"
-gem "dotenv"
+gem 'nokogiri'
+gem 'curb'
+gem 'dotenv'
 
 group :development do
-  gem "rspec"
-  gem "rubocop"
+  gem 'rspec'
+  gem 'rubocop'
 end
 
 group :test do
-  gem "codeclimate-test-reporter", require: nil
-  gem "rake"
+  gem 'codeclimate-test-reporter', require: nil
+  gem 'rake'
 end
