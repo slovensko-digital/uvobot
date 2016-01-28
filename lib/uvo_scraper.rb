@@ -1,7 +1,8 @@
 require "curb"
 
 class UvoScraper
-  SEARCH_URL = "https://www2.uvo.gov.sk/evestnik?p_p_id=evestnik_WAR_eVestnikPortlets&p_p_lifecycle=1&p_p_state=normal&p_p_mode=view&p_p_col_id=column-2&p_p_col_pos=1&p_p_col_count=2".freeze
+  SEARCH_URL = "https://www2.uvo.gov.sk/evestnik?p_p_id=evestnik_WAR_eVestnikPortlets&p_p_lifecycle=1" \
+               "&p_p_state=normal&p_p_mode=view&p_p_col_id=column-2&p_p_col_pos=1&p_p_col_count=2".freeze
   NEW_ISSUE_URL = "https://www2.uvo.gov.sk/evestnik/-/vestnik/aktual".freeze
   IT_CONTRACTS_CODE = 72
 
