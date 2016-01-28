@@ -1,1 +1,4 @@
 .idea
+.env
+.DS_Store
+spec/examples.txt
