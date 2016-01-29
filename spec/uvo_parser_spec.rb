@@ -1,4 +1,3 @@
-require 'spec_helper'
 require './lib/uvo_parser'
 
 RSpec.describe UvoParser do

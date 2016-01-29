@@ -1,4 +1,3 @@
-require 'spec_helper'
 require './lib/uvo_scraper'
 require './lib/uvo_parser'
 require 'date'

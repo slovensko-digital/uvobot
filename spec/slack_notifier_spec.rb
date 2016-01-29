@@ -1,4 +1,3 @@
-require 'spec_helper'
 require './lib/slack_notifier'
 
 RSpec.describe SlackNotifier do

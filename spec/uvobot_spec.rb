@@ -1,4 +1,3 @@
-require 'spec_helper'
 require './lib/uvobot'
 require './lib/slack_notifier'
 require './lib/uvo_scraper'
