@@ -25,4 +25,12 @@ class UvoScraper
 
     [@parser.parse_page_info(html), @parser.parse_announcements(html)]
   end
+
+  def get_announcements_details(announcements)
+    announcements.map do |a|
+      html = @html_client.get(a[:link][:href]).body
+      detail = @parser.parse_detail(html)
+      detail.merge(a)
+    end
+  end
 end

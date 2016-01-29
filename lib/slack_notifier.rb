@@ -15,7 +15,7 @@ class SlackNotifier
     send_message("Našiel som niečo nové na ÚVO! (#{page})")
 
     announcements.each do |a|
-      send_message("<#{a[:link][:href]}|#{a[:link][:text]}>: *#{a[:customer]}* #{a[:description]}")
+      send_message("<#{a[:link][:href]}|#{a[:link][:text]}>: *#{a[:procurer]}* #{a[:procurement_subject]}")
     end
   end
 

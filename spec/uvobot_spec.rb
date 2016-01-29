@@ -6,7 +6,8 @@ RSpec.describe Uvobot do
   describe '.run' do
     let(:notifier) { double }
     let(:scraper) { double }
-    let(:bot) { Uvobot.new(notifier, scraper) }
+    let(:publisher) { double }
+    let(:bot) { Uvobot.new(notifier, scraper, publisher) }
 
     it 'notifies missing issue' do
       allow(scraper).to receive('issue_ready?') { false }
@@ -22,12 +23,20 @@ RSpec.describe Uvobot do
     end
 
     it 'notifies announcements found' do
+      allow(publisher).to receive('publish_announcements') { true }
       allow(scraper).to receive('issue_ready?') { true }
       allow(scraper).to receive('get_announcements') do
         ['', [{}, {}]]
       end
+      allow(scraper).to receive('get_announcements_details') do
+        ['', [{}, {}]]
+      end
       expect(notifier).to receive(:matching_announcements_found).with('', [{}, {}])
       bot.run(nil)
+    end
+
+    it 'creates topics via publisher' do
+
     end
   end
 end
