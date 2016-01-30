@@ -9,8 +9,8 @@ require './lib/discourse_client'
 
 Dotenv.load
 discourse_client = DiscourseClient.new(ENV.fetch('DISCOURSE_URL'),
-                                            ENV.fetch('DISCOURSE_API_KEY'),
-                                            ENV.fetch('DISCOURSE_USER') )
+                                       ENV.fetch('DISCOURSE_API_KEY'),
+                                       ENV.fetch('DISCOURSE_USER'))
 
 Uvobot.new(
   SlackNotifier.new(ENV.fetch('UVOBOT_SLACK_WEBHOOK')),

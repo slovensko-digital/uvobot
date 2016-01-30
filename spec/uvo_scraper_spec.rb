@@ -42,7 +42,14 @@ RSpec.describe UvoScraper do
   end
 
   describe '.get_announcements_details' do
-    let(:announcements) { [{link: {href: "dummy link", text: 'dummy text'}, procurer: 'procurer', procurement_subject: 'subject'}] }
+    let(:announcements) do
+      [{
+        link: { href: 'dummy link', text: 'dummy text' },
+        procurer: 'procurer',
+        procurement_subject: 'subject'
+      }]
+    end
+
     it 'returns scraped announcements detail info' do
       allow(curl_double).to receive_message_chain('get.body') do
         File.read('./spec/support/fixtures/announcement_detail.html')
@@ -51,10 +58,10 @@ RSpec.describe UvoScraper do
 
       expect(details.count).to eq 1
       detail = details.first
-      expect(detail[:procurer]).to eq "procurer"
+      expect(detail[:procurer]).to eq 'procurer'
       expect(detail[:amount]).to eq '24 074,6800'
       expect(detail[:procurement_subject]).to eq 'subject'
-      link = {href: 'dummy link', text: 'dummy text'}
+      link = { href: 'dummy link', text: 'dummy text' }
       expect(detail[:link]).to eq link
     end
   end

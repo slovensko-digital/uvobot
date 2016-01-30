@@ -36,7 +36,6 @@ RSpec.describe Uvobot do
     end
 
     it 'creates topics via publisher' do
-
     end
   end
 end
