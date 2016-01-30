@@ -3,7 +3,7 @@ require './lib/discourse_publisher'
 RSpec.describe DiscoursePublisher do
   let(:client_double) { double}
   let(:client_exception_class_double) { double}
-  let(:publisher) { DiscoursePublisher.new(client_double, client_exception_class_double) }
+  let(:publisher) { DiscoursePublisher.new(client_double) }
 
   describe '.publish_announcements' do
     it 'creates new topic for each announcement' do

@@ -1,7 +1,6 @@
 class DiscoursePublisher
-  def initialize(discourse_client, exception_class)
+  def initialize(discourse_client)
     @client = discourse_client
-    @client_exception_class = exception_class
   end
 
   def publish_announcements(announcements, category = 'Štátne projekty')
@@ -11,7 +10,7 @@ class DiscoursePublisher
            @client.create_topic(title: topic[:title],
                                 raw: topic[:body],
                                 category: category)
-         rescue @client_exception_class => e
+         rescue @client.class::Error => e
            # discourse api/faraday bug - most probably
            next if e.message == "757: unexpected token at 'null'"
            #TODO discourse validation and rate violations handling
