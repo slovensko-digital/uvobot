@@ -1,11 +1,11 @@
-require './lib/discourse_publisher'
+require './lib/notifiers/discourse'
 
-RSpec.describe DiscoursePublisher do
+RSpec.describe Notifiers::Discourse do
   let(:client_double) { double }
   let(:client_exception_class_double) { double }
-  let(:publisher) { DiscoursePublisher.new(client_double) }
+  let(:publisher) { Notifiers::Discourse.new(client_double, 'dummy category') }
 
-  describe '.publish_announcements' do
+  describe '.match_announcements_found' do
     it 'creates new topic for each announcement' do
       allow(client_double).to receive_message_chain('create_topic') { true }
       announcements = [{ link: { href: 'href', text: 'text' },
@@ -19,10 +19,16 @@ RSpec.describe DiscoursePublisher do
       }
       expect(client_double).to receive(:create_topic).with(params)
 
-      publisher.publish_announcements(announcements, 'dummy category')
+      publisher.matching_announcements_found('page info', announcements)
     end
 
     it 'handles validations errors' do
     end
+  end
+
+  describe '.no_announcements_found' do
+  end
+
+  describe '.new_issue_not_published' do
   end
 end

@@ -33,4 +33,9 @@ class UvoScraper
       detail.merge(a)
     end
   end
+
+  def get_full_announcements(release_date)
+    page_info, announcements = get_announcements(release_date)
+    [page_info, get_announcements_details(announcements)]
+  end
 end

@@ -19,13 +19,13 @@ class UvoParser
   end
 
   def self.parse_detail(html)
-    detail = { amount: 'Parsing failed' }
+    detail = { amount: 'Extrakcia sa nepodarila.' }
     begin
       h_doc = doc(html)
-      # TODO, unstable, there are multiple formats of detail page
+      # unstable, there are multiple formats of detail page
       detail[:amount] = h_doc.xpath('//div[text()="Hodnota "]').css('span').first.text
     rescue StandardError => e
-      puts e.message
+      puts "Detail parsing exception: #{e.message}"
     end
     detail
   end

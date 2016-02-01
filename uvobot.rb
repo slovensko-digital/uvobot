@@ -1,19 +1,24 @@
 require 'dotenv'
 require 'date'
-require './lib/uvobot'
-require './lib/slack_notifier'
-require './lib/uvo_scraper'
-require './lib/uvo_parser'
-require './lib/discourse_publisher'
-require './lib/discourse_client'
+require_relative './lib/uvobot'
+require_relative 'lib/notifiers'
+require_relative './lib/uvo_scraper'
+require_relative './lib/uvo_parser'
+require_relative './lib/discourse_client'
 
 Dotenv.load
-discourse_client = DiscourseClient.new(ENV.fetch('DISCOURSE_URL'),
-                                       ENV.fetch('DISCOURSE_API_KEY'),
-                                       ENV.fetch('DISCOURSE_USER'))
+discourse_client = DiscourseClient.new(
+  ENV.fetch('DISCOURSE_URL'),
+  ENV.fetch('DISCOURSE_API_KEY'),
+  ENV.fetch('DISCOURSE_USER')
+)
+
+notifiers = [
+  Notifiers::Slack.new(ENV.fetch('UVOBOT_SLACK_WEBHOOK')),
+  Notifiers::Discourse.new(discourse_client)
+]
 
 Uvobot.new(
-  SlackNotifier.new(ENV.fetch('UVOBOT_SLACK_WEBHOOK')),
-  UvoScraper.new(UvoParser),
-  DiscoursePublisher.new(discourse_client)
+  notifiers,
+  UvoScraper.new(UvoParser)
 ).run(Date.today)

@@ -43,11 +43,13 @@ RSpec.describe UvoScraper do
 
   describe '.get_announcements_details' do
     let(:announcements) do
-      [{
-        link: { href: 'dummy link', text: 'dummy text' },
-        procurer: 'procurer',
-        procurement_subject: 'subject'
-      }]
+      [
+        {
+          link: { href: 'dummy link', text: 'dummy text' },
+          procurer: 'procurer',
+          procurement_subject: 'subject'
+        }
+      ]
     end
 
     it 'returns scraped announcements detail info' do
@@ -63,6 +65,15 @@ RSpec.describe UvoScraper do
       expect(detail[:procurement_subject]).to eq 'subject'
       link = { href: 'dummy link', text: 'dummy text' }
       expect(detail[:link]).to eq link
+    end
+  end
+
+  describe '.get_full_announcements' do
+    it 'returns merged announcement hash with all desired details' do
+      allow(scraper).to receive('get_announcements') { ['page info', []] }
+      allow(scraper).to receive('get_announcements_details') { [{ info: 'Test' }] }
+
+      expect(scraper.get_full_announcements('dummy date')).to eq ['page info', [{ info: 'Test' }]]
     end
   end
 end
