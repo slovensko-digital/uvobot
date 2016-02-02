@@ -21,9 +21,11 @@ module Uvobot
       def matching_announcements_found(_page_info, announcements)
         announcements.each do |a|
           topic = announcement_to_topic(a)
-          @client.create_topic(title: topic[:title],
-                               raw: topic[:body],
-                               category: @category)
+          @client.create_topic(
+            title: topic[:title],
+            raw: topic[:body],
+            category: @category
+          )
         end
       end
 
