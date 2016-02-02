@@ -1,19 +1,21 @@
-require_relative './base'
+require_relative './notifier'
+require_relative '../uvo_scraper'
 
 module Uvobot
   module Notifications
-    class DiscourseNotifier < Base
-      def initialize(discourse_client, category = 'Štátne projekty')
+    class DiscourseNotifier < Notifier
+      def initialize(discourse_client, category = 'Štátne projekty', scraper = Uvobot::UvoScraper.new)
         @client = discourse_client
         @category = category
+        @scraper = scraper
       end
 
       def no_announcements_found
-        # Does nothing for now.
+        # noop
       end
 
       def new_issue_not_published
-        # Does nothing for now.
+        # noop
       end
 
       def matching_announcements_found(_page_info, announcements)
@@ -28,12 +30,13 @@ module Uvobot
       private
 
       def announcement_to_topic(announcement)
+        detail = @scraper.get_announcement_detail(announcement[:link][:href])
         {
           title: announcement[:procurement_subject].to_s,
-          body: "**Obstarávateľ:** #{announcement[:procurer]}  \n" \
-               "**Predmet obstarávania:** #{announcement[:procurement_subject]}  \n" \
-               "**Cena:** #{announcement[:detail].call[:amount]} EUR  \n" \
-               "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"
+          body: ["**Obstarávateľ:** #{announcement[:procurer]}  ",
+                 "**Predmet obstarávania:** #{announcement[:procurement_subject]}  ",
+                 "**Cena:** #{detail[:amount]} EUR  ",
+                 "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"].join("\n")
         }
       end
     end

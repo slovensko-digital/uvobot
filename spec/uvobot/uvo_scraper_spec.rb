@@ -39,21 +39,6 @@ RSpec.describe Uvobot::UvoScraper do
       expect(announcement[:link]).to eq link
       expect(announcement[:procurer]).to eq 'Štatistický úrad Slovenskej republiky'
       expect(announcement[:procurement_subject]).to eq 'Dodávka informačno-komunikačných technológií'
-      expect(announcement[:detail].lambda?).to eq true
-
-      allow(curl_double).to receive_message_chain('get.body') do
-        File.read('./spec/support/fixtures/announcement_detail.html')
-      end
-      detail = { amount: '24 074,6800' }
-      expect(announcement[:detail].call).to eq detail
-    end
-  end
-
-  describe '.add_lazy_detail_scraping' do
-    let(:announcements) { [{ link: { href: 'url' } }] }
-    it 'adds lambda function with scraping of detail to each announcement hash' do
-      extented_announcements = scraper.add_lazy_detail_scraping(announcements)
-      expect(extented_announcements.first[:detail].lambda?).to eq true
     end
   end
 

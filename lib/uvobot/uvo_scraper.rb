@@ -1,4 +1,5 @@
 require 'curb'
+require_relative './uvo_parser'
 
 module Uvobot
   class UvoScraper
@@ -7,7 +8,7 @@ module Uvobot
     NEW_ISSUE_URL = 'https://www2.uvo.gov.sk/evestnik/-/vestnik/aktual'.freeze
     IT_CONTRACTS_CODE = 72
 
-    def initialize(parser, html_client = Curl)
+    def initialize(parser = Uvobot::UvoParser, html_client = Curl)
       @parser = parser
       @html_client = html_client
     end
@@ -24,15 +25,7 @@ module Uvobot
       search_query = { cpv: IT_CONTRACTS_CODE, datumZverejneniaOd: date, datumZverejneniaDo: date }
       html = @html_client.post(SEARCH_URL, search_query).body
 
-      announcements = add_lazy_detail_scraping(@parser.parse_announcements(html))
-      [@parser.parse_page_info(html), announcements]
-    end
-
-    def add_lazy_detail_scraping(announcements)
-      announcements.map do |a|
-        a[:detail] = -> { get_announcement_detail(a[:link][:href]) }
-        a
-      end
+      [@parser.parse_page_info(html), @parser.parse_announcements(html)]
     end
 
     def get_announcement_detail(url)

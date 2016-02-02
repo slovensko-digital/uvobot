@@ -1,10 +1,10 @@
 require 'json'
 require 'curb'
-require_relative './base'
+require_relative './notifier'
 
 module Uvobot
   module Notifications
-    class SlackNotifier < Base
+    class SlackNotifier < Notifier
       def initialize(slack_webhook, http_client = Curl)
         @slack_webhook = slack_webhook
         @http_client = http_client

@@ -2,7 +2,7 @@ require 'abstract_type'
 
 module Uvobot
   module Notifications
-    class Base
+    class Notifier
       include AbstractType
 
       abstract_method :matching_announcements_found
