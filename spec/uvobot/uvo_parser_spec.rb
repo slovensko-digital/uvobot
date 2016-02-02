@@ -1,7 +1,7 @@
-require './lib/uvo_parser'
+require './lib/uvobot/uvo_parser'
 
-RSpec.describe UvoParser do
-  let(:parser) { UvoParser }
+RSpec.describe Uvobot::UvoParser do
+  let(:parser) { Uvobot::UvoParser }
 
   describe '.parse_announcements' do
     it 'parses out announcements in structured form' do

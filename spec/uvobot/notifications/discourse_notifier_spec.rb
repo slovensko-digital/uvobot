@@ -1,15 +1,17 @@
-require './lib/notifiers/discourse'
+require './lib/uvobot/notifications/discourse_notifier'
 
-RSpec.describe Notifiers::Discourse do
+RSpec.describe Uvobot::Notifications::DiscourseNotifier do
   let(:client_double) { double }
   let(:client_exception_class_double) { double }
-  let(:publisher) { Notifiers::Discourse.new(client_double, 'dummy category') }
+  let(:notifier) { Uvobot::Notifications::DiscourseNotifier.new(client_double, 'dummy category') }
 
   describe '.match_announcements_found' do
     it 'creates new topic for each announcement' do
-      allow(client_double).to receive_message_chain('create_topic') { true }
+      allow(client_double).to receive('create_topic') { true }
       announcements = [{ link: { href: 'href', text: 'text' },
-                         procurer: 'procurer', procurement_subject: 'subject', amount: '1000' }]
+                         procurer: 'procurer',
+                         procurement_subject: 'subject',
+                         detail: -> { { amount: '1000' } } }]
 
       params = {
         title: 'subject',
@@ -19,7 +21,7 @@ RSpec.describe Notifiers::Discourse do
       }
       expect(client_double).to receive(:create_topic).with(params)
 
-      publisher.matching_announcements_found('page info', announcements)
+      notifier.matching_announcements_found('page info', announcements)
     end
 
     it 'handles validations errors' do

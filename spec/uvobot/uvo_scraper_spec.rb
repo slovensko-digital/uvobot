@@ -1,10 +1,10 @@
-require './lib/uvo_scraper'
-require './lib/uvo_parser'
+require './lib/uvobot/uvo_scraper'
+require './lib/uvobot/uvo_parser'
 require 'date'
 
-RSpec.describe UvoScraper do
+RSpec.describe Uvobot::UvoScraper do
   let(:curl_double) { double }
-  let(:scraper) { UvoScraper.new(UvoParser, curl_double) }
+  let(:scraper) { Uvobot::UvoScraper.new(Uvobot::UvoParser, curl_double) }
 
   describe '.issue_ready?' do
     it 'returns true if new issue is present' do
@@ -18,7 +18,7 @@ RSpec.describe UvoScraper do
       allow(curl_double).to receive_message_chain('get.body') do
         File.read('./spec/support/fixtures/new_issue_uvo_page.html')
       end
-      scraper = UvoScraper.new(UvoParser, curl_double)
+      scraper = Uvobot::UvoScraper.new(Uvobot::UvoParser, curl_double)
       expect(scraper.issue_ready?(Date.new(2016, 1, 29))).to eq false
     end
   end
@@ -28,6 +28,7 @@ RSpec.describe UvoScraper do
       allow(curl_double).to receive_message_chain('post.body') do
         File.read('./spec/support/fixtures/announcements.html')
       end
+
       page_info, announcements = scraper.get_announcements(Date.new(2016, 1, 29))
 
       expect(page_info).to eq 'Zobrazujem 5 záznamov.'
@@ -38,42 +39,39 @@ RSpec.describe UvoScraper do
       expect(announcement[:link]).to eq link
       expect(announcement[:procurer]).to eq 'Štatistický úrad Slovenskej republiky'
       expect(announcement[:procurement_subject]).to eq 'Dodávka informačno-komunikačných technológií'
-    end
-  end
+      expect(announcement[:detail].lambda?).to eq true
 
-  describe '.get_announcements_details' do
-    let(:announcements) do
-      [
-        {
-          link: { href: 'dummy link', text: 'dummy text' },
-          procurer: 'procurer',
-          procurement_subject: 'subject'
-        }
-      ]
-    end
-
-    it 'returns scraped announcements detail info' do
       allow(curl_double).to receive_message_chain('get.body') do
         File.read('./spec/support/fixtures/announcement_detail.html')
       end
-      details = scraper.get_announcements_details(announcements)
-
-      expect(details.count).to eq 1
-      detail = details.first
-      expect(detail[:procurer]).to eq 'procurer'
-      expect(detail[:amount]).to eq '24 074,6800'
-      expect(detail[:procurement_subject]).to eq 'subject'
-      link = { href: 'dummy link', text: 'dummy text' }
-      expect(detail[:link]).to eq link
+      detail = { amount: '24 074,6800' }
+      expect(announcement[:detail].call).to eq detail
     end
   end
 
-  describe '.get_full_announcements' do
-    it 'returns merged announcement hash with all desired details' do
-      allow(scraper).to receive('get_announcements') { ['page info', []] }
-      allow(scraper).to receive('get_announcements_details') { [{ info: 'Test' }] }
+  describe '.add_lazy_detail_scraping' do
+    let(:announcements) { [{ link: { href: 'url' } }] }
+    it 'adds lambda function with scraping of detail to each announcement hash' do
+      extented_announcements = scraper.add_lazy_detail_scraping(announcements)
+      expect(extented_announcements.first[:detail].lambda?).to eq true
+    end
+  end
 
-      expect(scraper.get_full_announcements('dummy date')).to eq ['page info', [{ info: 'Test' }]]
+  describe '.get_announcement_detail' do
+    it 'parses out detail info' do
+      allow(curl_double).to receive_message_chain('get.body') do
+        File.read('./spec/support/fixtures/announcement_detail.html')
+      end
+      detail = { amount: '24 074,6800' }
+      expect(scraper.get_announcement_detail('dummy url')).to eq detail
+    end
+
+    it 'returns dummy detail with warning message when parsing fails' do
+      allow(curl_double).to receive_message_chain('get.body') do
+        fails 'Whack!'
+      end
+      detail = { amount: 'Parsovanie zlyhalo.' }
+      expect(scraper.get_announcement_detail('dummy url')).to eq detail
     end
   end
 end

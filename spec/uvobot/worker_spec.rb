@@ -1,11 +1,11 @@
-require './lib/uvobot'
-require './lib/uvo_scraper'
+require './lib/uvobot/worker'
+require './lib/uvobot/uvo_scraper'
 
-RSpec.describe Uvobot do
+RSpec.describe Uvobot::Worker do
   describe '.run' do
     let(:notifier) { double }
     let(:scraper) { double }
-    let(:bot) { Uvobot.new([notifier], scraper) }
+    let(:bot) { Uvobot::Worker.new(scraper, [notifier]) }
 
     it 'notifies missing issue' do
       allow(scraper).to receive('issue_ready?') { false }
@@ -15,7 +15,7 @@ RSpec.describe Uvobot do
 
     it 'notifies no announcements found' do
       allow(scraper).to receive('issue_ready?') { true }
-      allow(scraper).to receive('get_full_announcements') do
+      allow(scraper).to receive('get_announcements') do
         ['', []]
       end
       expect(notifier).to receive(:no_announcements_found)
@@ -24,7 +24,7 @@ RSpec.describe Uvobot do
 
     it 'notifies announcements found' do
       allow(scraper).to receive('issue_ready?') { true }
-      allow(scraper).to receive('get_full_announcements') do
+      allow(scraper).to receive('get_announcements') do
         ['', [{}, {}]]
       end
       expect(notifier).to receive(:matching_announcements_found).with('', [{}, {}])
