@@ -1,6 +1,6 @@
 require 'dotenv'
 require 'date'
-require_relative './lib/uvobot'
+require_relative 'lib/uvobot'
 
 Dotenv.load
 discourse_client = Uvobot::DiscourseClient.new(
@@ -11,7 +11,7 @@ discourse_client = Uvobot::DiscourseClient.new(
 
 notifiers = [
   Uvobot::Notifications::SlackNotifier.new(ENV.fetch('UVOBOT_SLACK_WEBHOOK')),
-  Uvobot::Notifications::DiscourseNotifier.new(discourse_client)
+  Uvobot::Notifications::DiscourseNotifier.new(discourse_client, 'Štátne projekty', Uvobot::UvoScraper.new)
 ]
 
 Uvobot::Worker.new(

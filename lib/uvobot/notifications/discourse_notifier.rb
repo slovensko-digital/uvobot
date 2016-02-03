@@ -1,10 +1,10 @@
-require_relative './notifier'
+require_relative 'notifier'
 require_relative '../uvo_scraper'
 
 module Uvobot
   module Notifications
     class DiscourseNotifier < Notifier
-      def initialize(discourse_client, category = 'Štátne projekty', scraper = Uvobot::UvoScraper.new)
+      def initialize(discourse_client, category, scraper)
         @client = discourse_client
         @category = category
         @scraper = scraper
@@ -33,13 +33,22 @@ module Uvobot
 
       def announcement_to_topic(announcement)
         detail = @scraper.get_announcement_detail(announcement[:link][:href])
+
         {
           title: announcement[:procurement_subject].to_s,
           body: ["**Obstarávateľ:** #{announcement[:procurer]}  ",
                  "**Predmet obstarávania:** #{announcement[:procurement_subject]}  ",
-                 "**Cena:** #{detail[:amount]} EUR  ",
+                 detail_message(detail),
                  "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"].join("\n")
         }
+      end
+
+      def detail_message(detail)
+        if detail
+          "**Cena:** #{detail[:amount]} EUR  "
+        else
+          "**Detaily sa nepodarilo extrahovať.**  "
+        end
       end
     end
   end

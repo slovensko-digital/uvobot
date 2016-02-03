@@ -1,6 +1,9 @@
 require 'nokogiri'
 
 module Uvobot
+  class ParsingError < StandardError
+  end
+
   class UvoParser
     def self.parse_announcements(html)
       announcements = []
@@ -20,10 +23,13 @@ module Uvobot
     end
 
     def self.parse_detail(html)
-      detail = { amount: 'Extrakcia sa nepodarila.' }
+      # there are multiple formats of detail page, this method does not handle them all for now
+      detail = {}
       h_doc = doc(html)
-      # unstable, there are multiple formats of detail page
-      detail[:amount] = h_doc.xpath('//div[text()="Hodnota "]').css('span').first.text
+      amount_node = h_doc.xpath('//div[text()="Hodnota "]').css('span').first
+      fail Uvobot::ParsingError, 'Amount node not found.' if amount_node.nil?
+
+      detail[:amount] = amount_node.text
       detail
     end
 

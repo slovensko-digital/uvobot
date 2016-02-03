@@ -1,5 +1,5 @@
 require 'curb'
-require_relative './uvo_parser'
+require_relative 'uvo_parser'
 
 module Uvobot
   class UvoScraper
@@ -31,8 +31,8 @@ module Uvobot
     def get_announcement_detail(url)
       html = @html_client.get(url).body
       @parser.parse_detail(html)
-    rescue StandardError => e
-      { amount: 'Parsovanie zlyhalo.' }
+    rescue Uvobot::ParsingError
+      nil
     end
   end
 end

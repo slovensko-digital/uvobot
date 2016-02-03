@@ -1,6 +1,6 @@
 require 'json'
 require 'curb'
-require_relative './notifier'
+require_relative 'notifier'
 
 module Uvobot
   module Notifications

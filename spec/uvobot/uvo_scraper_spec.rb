@@ -51,12 +51,11 @@ RSpec.describe Uvobot::UvoScraper do
       expect(scraper.get_announcement_detail('dummy url')).to eq detail
     end
 
-    it 'returns dummy detail with warning message when parsing fails' do
+    it 'returns nil when parsing fails' do
       allow(curl_double).to receive_message_chain('get.body') do
-        fails 'Whack!'
+        '<html><body><body/></html>'
       end
-      detail = { amount: 'Parsovanie zlyhalo.' }
-      expect(scraper.get_announcement_detail('dummy url')).to eq detail
+      expect(scraper.get_announcement_detail('dummy url')).to eq nil
     end
   end
 end
