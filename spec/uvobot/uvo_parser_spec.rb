@@ -1,5 +1,4 @@
 require './lib/uvobot/uvo_parser'
-require './lib/uvobot/uvo_scraper'
 
 RSpec.describe Uvobot::UvoParser do
   let(:parser) { Uvobot::UvoParser }
@@ -7,12 +6,12 @@ RSpec.describe Uvobot::UvoParser do
   describe '.parse_announcements' do
     it 'parses out announcements in structured form' do
       html = File.read('./spec/support/fixtures/announcements.html')
-      announcements = parser.parse_announcements(html, Uvobot::UvoScraper::UVO_ROOT_URL)
+      announcements = parser.parse_announcements(html, "https://www.uvo.gov.sk")
 
       expect(announcements.count).to eq 3
 
       announcement = announcements.first
-      href = Uvobot::UvoScraper::UVO_ROOT_URL + '/vestnik/oznamenie/detail/327310?page=1&limit=20&sort=datumZverejnenia&sort-dir=DESC&ext=1' \
+      href = 'https://www.uvo.gov.sk/vestnik/oznamenie/detail/327310?page=1&limit=20&sort=datumZverejnenia&sort-dir=DESC&ext=1' \
              '&cisloOznamenia=&text=&year=0&dzOd=02.02.2016&dzDo=02.02.2016&cvestnik=&doznamenia=-1&dzakazky=-1&dpostupu' \
              '=-1&mdodania=&kcpv=48000000-8+72000000-5&opb=&szfeu=&flimit=-1&nobstaravatel=&nzakazky='
       link = { href: href, text: '2631 - ZSS' }

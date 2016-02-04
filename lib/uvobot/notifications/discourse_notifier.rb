@@ -46,7 +46,7 @@ module Uvobot
         if detail
           "**Cena:** #{detail[:amount]} EUR  "
         else
-          "**Detaily sa nepodarilo extrahovať.**  "
+          '**Detaily sa nepodarilo extrahovať.**  '
         end
       end
     end

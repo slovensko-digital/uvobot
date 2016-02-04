@@ -2,23 +2,27 @@ require 'nokogiri'
 
 module Uvobot
   class UvoParser
-    def self.parse_announcements(html, root_url)
+    def self.parse_announcements(html, bulletin_url)
       announcements = []
 
-      doc(html).css('#lists-table tr[onclick]').each do |e|
-        items = e.css('td').first.text.split("\n").map(&:strip)
-        link_text = items[0]
-        link_href = e.attributes['onclick'].text.scan(/'(.*)'/).first[0]
-        procurer = items[1]
-        procurement_subject = items[2]
-
-        announcements << {
-          link: { text: link_text, href: root_url + link_href },
-          procurer: procurer,
-          procurement_subject: procurement_subject
-        }
+      doc(html).css('#lists-table tr[onclick]').each do |tr|
+        announcements << parse_table_line(tr, bulletin_url)
       end
       announcements
+    end
+
+    def self.parse_table_line(tr_node, bulletin_url)
+      a_parts = tr_node.css('td').first.text.split("\n").map(&:strip)
+
+      {
+        link: { text: a_parts[0], href: parse_detail_link(tr_node, bulletin_url) },
+        procurer: a_parts[1],
+        procurement_subject: a_parts[2]
+      }
+    end
+
+    def self.parse_detail_link(tr_node, bulletin_url)
+      bulletin_url + tr_node.attributes['onclick'].text.scan(/'(.*)'/).first[0]
     end
 
     def self.parse_detail(html)

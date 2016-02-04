@@ -3,9 +3,9 @@ require_relative 'uvo_parser'
 
 module Uvobot
   class UvoScraper
-    UVO_ROOT_URL = 'https://www.uvo.gov.sk'.freeze
-    SEARCH_URL = "#{UVO_ROOT_URL}/vestnik/oznamenia/zoznam".freeze
-    NEW_ISSUE_URL = "#{UVO_ROOT_URL}/vestnik-a-registre/vestnik-479.html".freeze
+    BULLETIN_URL = 'https://www.uvo.gov.sk'.freeze
+    SEARCH_URL = "#{BULLETIN_URL}/vestnik/oznamenia/zoznam".freeze
+    NEW_ISSUE_URL = "#{BULLETIN_URL}/vestnik-a-registre/vestnik-479.html".freeze
     IT_CONTRACTS_CODE = '48000000-8 72000000-5'.freeze
 
     def initialize(parser = Uvobot::UvoParser, html_client = Curl)
@@ -27,7 +27,7 @@ module Uvobot
       search_query = { kcpv: IT_CONTRACTS_CODE, dzOd: date, dzDo: date }
       html = @html_client.post(SEARCH_URL, search_query).body
 
-      [@parser.parse_page_info(html), @parser.parse_announcements(html, UVO_ROOT_URL)]
+      [@parser.parse_page_info(html), @parser.parse_announcements(html, BULLETIN_URL)]
     end
 
     def get_announcement_detail(url)
