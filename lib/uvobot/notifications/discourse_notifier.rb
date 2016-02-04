@@ -1,5 +1,4 @@
 require_relative 'notifier'
-require_relative '../uvo_scraper'
 
 module Uvobot
   module Notifications
