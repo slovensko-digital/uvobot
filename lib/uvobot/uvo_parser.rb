@@ -2,16 +2,18 @@ require 'nokogiri'
 
 module Uvobot
   class UvoParser
-    def self.parse_announcements(html)
+    def self.parse_announcements(html, root_url)
       announcements = []
 
-      doc(html).css('.oznamenie').each do |a|
-        link = a.css('.ozn1 a').first
-        procurer = a.css('.ozn2').text.strip
-        procurement_subject = a.css('.ozn3').text.strip
+      doc(html).css('#lists-table tr[onclick]').each do |e|
+        items = e.css('td').first.text.split("\n").map(&:strip)
+        link_text = items[0]
+        link_href = e.attributes['onclick'].text.scan(/'(.*)'/).first[0]
+        procurer = items[1]
+        procurement_subject = items[2]
 
         announcements << {
-          link: { text: link.text, href: link['href'] },
+          link: { text: link_text, href: root_url + link_href },
           procurer: procurer,
           procurement_subject: procurement_subject
         }
@@ -23,7 +25,7 @@ module Uvobot
       # there are multiple formats of detail page, this method does not handle them all for now
       detail = {}
       h_doc = doc(html)
-      amount_node = h_doc.xpath('//div[text()="Hodnota "]').css('span').first
+      amount_node = h_doc.xpath('//div[text()="Hodnota            "]').css('span').first
       return nil if amount_node.nil?
 
       detail[:amount] = amount_node.text
@@ -31,11 +33,12 @@ module Uvobot
     end
 
     def self.parse_page_info(html)
-      doc(html).css('.search-results').first.text.strip
+      page_info_node = doc(html).css('div.pag-info span').first
+      page_info_node.nil? ? nil : page_info_node.text.strip
     end
 
     def self.parse_issue_header(html)
-      doc(html).css('h1')[1].text
+      doc(html).css('h1').text
     end
 
     def self.doc(html)
