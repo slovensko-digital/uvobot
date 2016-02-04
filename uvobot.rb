@@ -11,7 +11,11 @@ discourse_client = Uvobot::DiscourseClient.new(
 
 notifiers = [
   Uvobot::Notifications::SlackNotifier.new(ENV.fetch('UVOBOT_SLACK_WEBHOOK')),
-  Uvobot::Notifications::DiscourseNotifier.new(discourse_client, 'Štátne projekty', Uvobot::UvoScraper.new)
+  Uvobot::Notifications::DiscourseNotifier.new(
+    discourse_client,
+    ENV.fetch('DISCOURSE_TARGET_CATEGORY'),
+    Uvobot::UvoScraper.new
+  )
 ]
 
 Uvobot::Worker.new(
