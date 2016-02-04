@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 gem 'nokogiri'
 gem 'curb'
 gem 'dotenv'
+gem 'discourse_api'
+gem 'abstract_type'
 
 group :development do
   gem 'rspec'

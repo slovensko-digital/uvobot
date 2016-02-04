@@ -1,26 +1,10 @@
-class Uvobot
-  def initialize(notifier, scraper)
-    @notifier = notifier
-    @scraper = scraper
-  end
+require_relative 'uvobot/worker'
+require_relative 'uvobot/uvo_scraper'
+require_relative 'uvobot/uvo_parser'
+require_relative 'uvobot/discourse_client'
+require_relative 'uvobot/notifications/discourse_notifier'
+require_relative 'uvobot/notifications/slack_notifier'
+require_relative 'uvobot/worker'
 
-  def run(release_date)
-    if @scraper.issue_ready?(release_date)
-      notify_announcements(release_date)
-    else
-      @notifier.new_issue_not_published
-    end
-  end
-
-  private
-
-  def notify_announcements(release_date)
-    page_info, announcements = @scraper.get_announcements(release_date)
-
-    if announcements.count > 0
-      @notifier.matching_announcements_found(page_info, announcements)
-    else
-      @notifier.no_announcements_found
-    end
-  end
+module Uvobot
 end

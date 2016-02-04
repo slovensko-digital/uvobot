@@ -1,8 +1,7 @@
-require 'spec_helper'
-require './lib/uvo_parser'
+require './lib/uvobot/uvo_parser'
 
-RSpec.describe UvoParser do
-  let(:parser) { UvoParser }
+RSpec.describe Uvobot::UvoParser do
+  let(:parser) { Uvobot::UvoParser }
 
   describe '.parse_announcements' do
     it 'parses out announcements in structured form' do
@@ -14,8 +13,16 @@ RSpec.describe UvoParser do
       announcement = announcements.first
       link = { href: 'https://www2.uvo.gov.sk/evestnik/-/vestnik/326817', text: '2329 - VZT' }
       expect(announcement[:link]).to eq link
-      expect(announcement[:customer]).to eq 'Štatistický úrad Slovenskej republiky'
-      expect(announcement[:description]).to eq 'Dodávka informačno-komunikačných technológií'
+      expect(announcement[:procurer]).to eq 'Štatistický úrad Slovenskej republiky'
+      expect(announcement[:procurement_subject]).to eq 'Dodávka informačno-komunikačných technológií'
+    end
+  end
+
+  describe '.parse_detail' do
+    it 'parses out announcement detail info' do
+      html = File.read('./spec/support/fixtures/announcement_detail.html')
+      detail = parser.parse_detail(html)
+      expect(detail[:amount]).to eq '24 074,6800'
     end
   end
 

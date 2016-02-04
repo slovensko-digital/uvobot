@@ -1,9 +1,8 @@
-require 'spec_helper'
-require './lib/slack_notifier'
+require './lib/uvobot/notifications/slack_notifier'
 
-RSpec.describe SlackNotifier do
+RSpec.describe Uvobot::Notifications::SlackNotifier do
   let(:curl_double) { double }
-  let(:notifier) { SlackNotifier.new('slack.com', curl_double) }
+  let(:notifier) { Uvobot::Notifications::SlackNotifier.new('slack.com', curl_double) }
 
   describe '.new_issue_not_published' do
     it 'sends correct payload to slack' do
@@ -14,12 +13,12 @@ RSpec.describe SlackNotifier do
 
   describe '.matching_announcements_found' do
     let(:announcements) do
-      [{ link: { text: 'text 1', href: 'href 1' }, customer: 'customer 1', description: 'desc 1' }]
+      [{ link: { text: 'text 1', href: 'href 1' }, procurer: 'procurer 1', procurement_subject: 'desc 1' }]
     end
 
     it 'sends correct payloads to slack' do
       expect(curl_double).to receive(:post).with(*params('Našiel som niečo nové na ÚVO! (Found 1 record)'))
-      expect(curl_double).to receive(:post).with(*params('<href 1|text 1>: *customer 1* desc 1'))
+      expect(curl_double).to receive(:post).with(*params('<href 1|text 1>: *procurer 1* desc 1'))
       notifier.matching_announcements_found('Found 1 record', announcements)
     end
   end
