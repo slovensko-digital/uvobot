@@ -1,9 +1,6 @@
 require 'nokogiri'
 
 module Uvobot
-  class ParsingError < StandardError
-  end
-
   class UvoParser
     def self.parse_announcements(html)
       announcements = []
@@ -27,7 +24,7 @@ module Uvobot
       detail = {}
       h_doc = doc(html)
       amount_node = h_doc.xpath('//div[text()="Hodnota "]').css('span').first
-      fail Uvobot::ParsingError, 'Amount node not found.' if amount_node.nil?
+      return nil if amount_node.nil?
 
       detail[:amount] = amount_node.text
       detail

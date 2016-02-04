@@ -31,8 +31,6 @@ module Uvobot
     def get_announcement_detail(url)
       html = @html_client.get(url).body
       @parser.parse_detail(html)
-    rescue Uvobot::ParsingError
-      nil
     end
   end
 end
