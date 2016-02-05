@@ -35,18 +35,18 @@ module Uvobot
 
         {
           title: announcement[:procurement_subject].to_s,
-          body: ["**Obstarávateľ:** #{announcement[:procurer]}  ",
-                 "**Predmet obstarávania:** #{announcement[:procurement_subject]}  ",
+          body: ["**Obstarávateľ:** #{announcement[:procurer]}",
+                 "**Predmet obstarávania:** #{announcement[:procurement_subject]}",
                  detail_message(detail),
-                 "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"].join("\n")
+                 "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"].join("  \n")
         }
       end
 
       def detail_message(detail)
         if detail
-          "**Cena:** #{detail[:amount]} EUR  "
+          "**Cena:** #{detail[:amount]}"
         else
-          "**Detaily sa nepodarilo extrahovať.**  "
+          '**Detaily sa nepodarilo extrahovať.**'
         end
       end
     end

@@ -9,7 +9,7 @@ RSpec.describe Uvobot::Notifications::DiscourseNotifier do
   describe '.match_announcements_found' do
     it 'creates new topic for each announcement' do
       allow(client_double).to receive('create_topic') { true }
-      allow(scraper_double).to receive('get_announcement_detail') { { amount: '1000' } }
+      allow(scraper_double).to receive('get_announcement_detail') { { amount: '1000 EUR' } }
       announcements = [{ link: { href: 'href', text: 'text' },
                          procurer: 'procurer',
                          procurement_subject: 'subject'
