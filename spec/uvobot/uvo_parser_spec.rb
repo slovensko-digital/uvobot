@@ -11,13 +11,15 @@ RSpec.describe Uvobot::UvoParser do
       expect(announcements.count).to eq 3
 
       announcement = announcements.first
-      href = 'https://www.uvo.gov.sk/vestnik/oznamenie/detail/327310?page=1&limit=20&sort=datumZverejnenia&sort-dir=DESC&ext=1' \
-             '&cisloOznamenia=&text=&year=0&dzOd=02.02.2016&dzDo=02.02.2016&cvestnik=&doznamenia=-1&dzakazky=-1&dpostupu' \
-             '=-1&mdodania=&kcpv=48000000-8+72000000-5&opb=&szfeu=&flimit=-1&nobstaravatel=&nzakazky='
+      href = 'https://www.uvo.gov.sk/vestnik/oznamenie/detail/327310?page=1&limit=20&sort=datumZverejnenia'\
+        '&sort-dir=DESC&ext=1&cisloOznamenia=&text=&year=0&dzOd=02.02.2016&dzDo=02.02.2016&cvestnik=&'\
+        'doznamenia=-1&dzakazky=-1&dpostupu=-1&mdodania=&kcpv=48000000-8+72000000-5&opb=&szfeu=&flimit=-1'\
+        '&nobstaravatel=&nzakazky='
       link = { href: href, text: '2631 - ZSS' }
       expect(announcement[:link]).to eq link
       expect(announcement[:procurer]).to eq 'Slovenský plynárenský priemysel, akciová spoločnosť'
-      expect(announcement[:procurement_subject]).to eq 'Dodávka, implementácia a následné služby k SW riešeniu Treasury a Risk management'
+      expect(announcement[:procurement_subject]).to eq 'Dodávka, implementácia a následné služby k SW riešeniu '\
+        'Treasury a Risk management'
     end
   end
 
