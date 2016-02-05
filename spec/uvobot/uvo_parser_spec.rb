@@ -6,7 +6,7 @@ RSpec.describe Uvobot::UvoParser do
   describe '.parse_announcements' do
     it 'parses out announcements in structured form' do
       html = File.read('./spec/support/fixtures/announcements.html')
-      announcements = parser.parse_announcements(html, "https://www.uvo.gov.sk")
+      announcements = parser.parse_announcements(html, 'https://www.uvo.gov.sk')
 
       expect(announcements.count).to eq 3
 
@@ -25,7 +25,7 @@ RSpec.describe Uvobot::UvoParser do
     it 'parses out announcement detail info' do
       html = File.read('./spec/support/fixtures/announcement_detail.html')
       detail = parser.parse_detail(html)
-      expect(detail[:amount]).to eq '270 000,0000'
+      expect(detail[:amount]).to eq '270 000,0000 EUR'
     end
   end
 

@@ -27,13 +27,13 @@ module Uvobot
 
     def self.parse_detail(html)
       # there are multiple formats of detail page, this method does not handle them all for now
-      detail = {}
       h_doc = doc(html)
-      amount_node = h_doc.xpath('//div[text()="Hodnota            "]').css('span').first
-      return nil if amount_node.nil?
+      amount_nodes = h_doc.xpath('//div[text()="Hodnota            "]')
+      return nil if amount_nodes.count == 0
 
-      detail[:amount] = amount_node.text
-      detail
+      first_amount = amount_nodes.first.css('span').map { |s| s.text.strip }.join(' ')
+
+      { amount: first_amount }
     end
 
     def self.parse_page_info(html)

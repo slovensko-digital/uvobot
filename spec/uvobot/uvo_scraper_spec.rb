@@ -50,7 +50,7 @@ RSpec.describe Uvobot::UvoScraper do
       allow(curl_double).to receive_message_chain('get.body') do
         File.read('./spec/support/fixtures/announcement_detail.html')
       end
-      detail = { amount: '270 000,0000' }
+      detail = { amount: '270 000,0000 EUR' }
       expect(scraper.get_announcement_detail('dummy url')).to eq detail
     end
 

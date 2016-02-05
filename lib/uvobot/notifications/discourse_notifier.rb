@@ -44,7 +44,7 @@ module Uvobot
 
       def detail_message(detail)
         if detail
-          "**Cena:** #{detail[:amount]} EUR"
+          "**Cena:** #{detail[:amount]}"
         else
           '**Detaily sa nepodarilo extrahovať.**'
         end
