@@ -9,6 +9,18 @@ RSpec.describe Uvobot::Notifications::DiscourseNotifier do
 
   it_should_behave_like 'notifier', Uvobot::Notifications::DiscourseNotifier.new('', '', '')
 
+  describe '.no_announcements_found' do
+    it 'does nothing' do
+      expect(notifier.no_announcements_found).to eq nil
+    end
+  end
+
+  describe '.new_issue_not_published' do
+    it 'does nothing' do
+      expect(notifier.new_issue_not_published).to eq nil
+    end
+  end
+
   describe '.match_announcements_found' do
     it 'creates new topic for each announcement' do
       allow(client_double).to receive('create_topic') { true }
