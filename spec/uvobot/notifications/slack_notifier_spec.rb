@@ -4,6 +4,8 @@ RSpec.describe Uvobot::Notifications::SlackNotifier do
   let(:curl_double) { double }
   let(:notifier) { Uvobot::Notifications::SlackNotifier.new('slack.com', curl_double) }
 
+  it_should_behave_like 'notifier', Uvobot::Notifications::SlackNotifier.new('', '')
+
   describe '.new_issue_not_published' do
     it 'sends correct payload to slack' do
       expect(curl_double).to receive(:post).with(*params('*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*'))

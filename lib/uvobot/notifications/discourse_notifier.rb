@@ -17,7 +17,7 @@ module Uvobot
         # noop
       end
 
-      def matching_announcements_found(_page_info, announcements)
+      def matching_announcements_found(_page, announcements)
         announcements.each do |a|
           topic = announcement_to_topic(a)
           @client.create_topic(
