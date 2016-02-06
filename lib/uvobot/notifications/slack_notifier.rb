@@ -10,8 +10,7 @@ module Uvobot
         @http_client = http_client
       end
 
-      def new_issue_not_published(date)
-        return if weekend?(date)
+      def new_issue_not_published
         send_message('*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*')
       end
 
@@ -28,10 +27,6 @@ module Uvobot
       end
 
       private
-
-      def weekend?(date)
-        date.saturday? || date.sunday?
-      end
 
       def send_message(text)
         @http_client.post(@slack_webhook, payload(text))

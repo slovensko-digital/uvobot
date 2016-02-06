@@ -9,11 +9,16 @@ module Uvobot
       if @scraper.issue_ready?(release_date)
         notify_announcements(release_date)
       else
-        @notifiers.each { |n| n.new_issue_not_published(release_date) }
+        return if weekend?(release_date)
+        @notifiers.each(&:new_issue_not_published)
       end
     end
 
     private
+
+    def weekend?(date)
+      date.saturday? || date.sunday?
+    end
 
     def notify_announcements(release_date)
       page_info, announcements = @scraper.get_announcements(release_date)

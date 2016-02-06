@@ -7,12 +7,7 @@ RSpec.describe Uvobot::Notifications::SlackNotifier do
   describe '.new_issue_not_published' do
     it 'sends correct payload to slack' do
       expect(curl_double).to receive(:post).with(*params('*Fíha, dnes na ÚVO nevyšlo nové vydanie vestníka?*'))
-      notifier.new_issue_not_published(Date.new(2016, 2, 2))
-    end
-
-    it 'mutes notification on weekend' do
-      expect(curl_double).to_not receive(:post)
-      notifier.new_issue_not_published(Date.new(2016, 2, 6))
+      notifier.new_issue_not_published
     end
   end
 

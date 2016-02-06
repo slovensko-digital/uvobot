@@ -10,7 +10,19 @@ RSpec.describe Uvobot::Worker do
     it 'notifies missing issue' do
       allow(scraper).to receive('issue_ready?') { false }
       expect(notifier).to receive(:new_issue_not_published)
-      bot.run(nil)
+      bot.run(Date.new(2016, 2, 5))
+    end
+
+    it 'mutes notification of missing issue on weekend' do
+      allow(scraper).to receive('issue_ready?') { false }
+
+      expect(notifier).to_not receive(:new_issue_not_published)
+      saturday = Date.new(2016, 2, 6)
+      bot.run(saturday)
+
+      expect(notifier).to_not receive(:new_issue_not_published)
+      sunday = Date.new(2016, 2, 7)
+      bot.run(sunday)
     end
 
     it 'notifies no announcements found' do
