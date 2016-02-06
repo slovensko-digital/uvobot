@@ -4,7 +4,7 @@ RSpec.shared_examples 'notifier' do |notifier_instance|
   it 'implements matching announcements found' do
     params = instance.method(:matching_announcements_found).parameters
     expect(params.count).to eq 2
-    expect(params.first).to satisfy{ |p| p == [:req, :_page] || p == [:req, :page] }
+    expect(params.first).to satisfy { |p| p == [:req, :_page] || p == [:req, :page] }
     expect(params.last).to eq [:req, :announcements]
   end
 
