@@ -1,10 +1,13 @@
 require './lib/uvobot/notifications/discourse_notifier'
+require 'uvobot/notifications/shared_examples_for_notifier'
 
 RSpec.describe Uvobot::Notifications::DiscourseNotifier do
   let(:client_double) { double }
   let(:scraper_double) { double }
   let(:client_exception_class_double) { double }
   let(:notifier) { Uvobot::Notifications::DiscourseNotifier.new(client_double, 'dummy category', scraper_double) }
+
+  it_should_behave_like 'notifier', Uvobot::Notifications::DiscourseNotifier.new('', '', '')
 
   describe '.match_announcements_found' do
     it 'creates new topic for each announcement' do
