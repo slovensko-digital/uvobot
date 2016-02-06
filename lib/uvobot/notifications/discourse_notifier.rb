@@ -13,7 +13,7 @@ module Uvobot
         # noop
       end
 
-      def new_issue_not_published
+      def new_issue_not_published(date)
         # noop
       end
 

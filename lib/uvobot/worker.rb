@@ -9,7 +9,7 @@ module Uvobot
       if @scraper.issue_ready?(release_date)
         notify_announcements(release_date)
       else
-        @notifiers.each(&:new_issue_not_published)
+        @notifiers.each { |n| n.new_issue_not_published(release_date) }
       end
     end
 
