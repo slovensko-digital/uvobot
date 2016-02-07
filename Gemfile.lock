@@ -114,7 +114,6 @@ DEPENDENCIES
   curb
   discourse_api
   dotenv
-  mutant
   mutant-rspec
   nokogiri
   rake
