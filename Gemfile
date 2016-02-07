@@ -9,6 +9,7 @@ gem 'abstract_type'
 group :development do
   gem 'rspec'
   gem 'rubocop'
+  gem 'mutant-rspec'
 end
 
 group :test do
