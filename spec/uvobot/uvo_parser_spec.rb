@@ -28,6 +28,7 @@ RSpec.describe Uvobot::UvoParser do
       html = File.read('./spec/support/fixtures/announcement_detail.html')
       detail = parser.parse_detail(html)
       expect(detail[:amount]).to eq '270 000,0000 EUR'
+      expect(detail[:procurement_type]).to eq 'Verejná súťaž'
     end
   end
 
