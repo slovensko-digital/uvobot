@@ -25,7 +25,7 @@ RSpec.describe Uvobot::UvoScraper do
 
   describe '.get_announcements' do
     it 'returns scraped announcements and page info' do
-      allow(curl_double).to receive_message_chain('post.body') do
+      allow(curl_double).to receive_message_chain('get.body') do
         File.read('./spec/support/fixtures/announcements.html')
       end
 
