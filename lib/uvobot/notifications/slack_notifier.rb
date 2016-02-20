@@ -1,11 +1,11 @@
 require 'json'
-require 'curb'
+require 'httparty'
 require_relative 'notifier'
 
 module Uvobot
   module Notifications
     class SlackNotifier < Notifier
-      def initialize(slack_webhook, http_client = Curl)
+      def initialize(slack_webhook, http_client = HTTParty)
         @slack_webhook = slack_webhook
         @http_client = http_client
       end
@@ -29,7 +29,7 @@ module Uvobot
       private
 
       def send_message(text)
-        @http_client.post(@slack_webhook, payload(text))
+        @http_client.post(@slack_webhook, body: payload(text))
       end
 
       def payload(text)
