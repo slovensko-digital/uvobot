@@ -53,7 +53,7 @@ module Uvobot
       end
 
       def fallback_if_nil(value)
-        value.nil? ? 'Nepodarilo sa extrahovať' : value
+        value || 'Nepodarilo sa extrahovať'
       end
     end
   end
