@@ -16,7 +16,7 @@ module Uvobot
     def issue_ready?(release_date)
       search_query = "?date=#{release_date.strftime('%d.%m.%Y')}"
 
-      html = @html_client.get(NEW_ISSUE_URL + search_query, :verify => false).body
+      html = @html_client.get(NEW_ISSUE_URL + search_query, verify: false).body
       header = @parser.parse_issue_header(html)
       identifier = release_date.strftime('/%Y - %d.%m.%Y')
       header.include?(identifier)
@@ -24,13 +24,14 @@ module Uvobot
 
     def get_announcements(release_date)
       date = release_date.strftime('%d.%m.%Y')
-      html = @html_client.get("#{SEARCH_URL}/?kcpv=#{IT_CONTRACTS_CODE.gsub(' ', '+')}&dzOd=#{date}&dzDo=#{date}", :verify => false).body
+      code = IT_CONTRACTS_CODE.tr(' ', '+')
+      html = @html_client.get("#{SEARCH_URL}/?kcpv=#{code}&dzOd=#{date}&dzDo=#{date}", verify: false).body
 
       [@parser.parse_page_info(html), @parser.parse_announcements(html, BULLETIN_URL)]
     end
 
     def get_announcement_detail(url)
-      html = @html_client.get(url, :verify => false).body
+      html = @html_client.get(url, verify: false).body
       @parser.parse_detail(html)
     end
   end
