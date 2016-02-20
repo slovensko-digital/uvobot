@@ -21,4 +21,4 @@ notifiers = [
 Uvobot::Worker.new(
   Uvobot::UvoScraper.new,
   notifiers
-).run(Date.new(2016, 2, 17))
+).run(Date.today)
