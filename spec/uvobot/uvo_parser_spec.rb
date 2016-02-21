@@ -30,6 +30,10 @@ RSpec.describe Uvobot::UvoParser do
       expect(detail[:amount]).to eq '270 000,0000 EUR'
       expect(detail[:procurement_type]).to eq 'Verejná súťaž'
     end
+
+    it 'returns nil if no detail info was found' do
+      expect(parser.parse_detail('')).to eq nil
+    end
   end
 
   describe '.parse_page_info' do

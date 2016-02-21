@@ -32,7 +32,7 @@ module Uvobot
         procurement_type: parse_procurement_type(html)
       }
 
-      result.values.uniq == [nil] ? nil : result
+      result.values.none? ? nil : result
     end
 
     def self.parse_amount(html)
