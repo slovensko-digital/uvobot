@@ -6,7 +6,7 @@ module Uvobot
     BULLETIN_URL = 'https://www.uvo.gov.sk'.freeze
     SEARCH_URL = "#{BULLETIN_URL}/vestnik/oznamenia/zoznam".freeze
     NEW_ISSUE_URL = "#{BULLETIN_URL}/vestnik-a-registre/vestnik-479.html".freeze
-    IT_CONTRACTS_CODE = '48000000-8 72000000-5'.freeze
+    IT_CONTRACTS_CODES = ['48000000-8', '72000000-5'].freeze
 
     def initialize(parser = Uvobot::UvoParser, html_client = HTTParty)
       @parser = parser
@@ -24,7 +24,7 @@ module Uvobot
 
     def get_announcements(release_date)
       date = release_date.strftime('%d.%m.%Y')
-      code = IT_CONTRACTS_CODE.tr(' ', '+')
+      code = IT_CONTRACTS_CODES.join('+')
       html = @html_client.get("#{SEARCH_URL}/?kcpv=#{code}&dzOd=#{date}&dzDo=#{date}", verify: false).body
 
       [@parser.parse_page_info(html), @parser.parse_announcements(html, BULLETIN_URL)]
