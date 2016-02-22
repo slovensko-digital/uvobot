@@ -21,7 +21,7 @@ RSpec.describe Uvobot::Notifications::DiscourseNotifier do
   describe '.match_announcements_found' do
     it 'creates new topic for each announcement' do
       allow(client_double).to receive('create_topic') { true }
-      allow(scraper_double).to receive('get_announcement_detail') { { amount: '1000 EUR' } }
+      allow(scraper_double).to receive('get_announcement_detail') { { amount: '1000 EUR', procurement_type: nil } }
       announcements = [{ link: { href: 'href', text: 'text' },
                          procurer: 'procurer',
                          procurement_subject: 'subject'
@@ -29,8 +29,8 @@ RSpec.describe Uvobot::Notifications::DiscourseNotifier do
 
       params = {
         title: 'subject',
-        raw: "**Obstarávateľ:** procurer  \n**Predmet obstarávania:** subject" \
-             "  \n**Cena:** 1000 EUR  \n**Zdroj:** [text](href)",
+        raw: "**Obstarávateľ:** procurer  \n**Predmet obstarávania:** subject  \n**Cena:** 1000 EUR" \
+             "  \n**Druh postupu:** Nepodarilo sa extrahovať  \n**Zdroj:** [text](href)",
         category: 'dummy category'
       }
       expect(client_double).to receive(:create_topic).with(params)

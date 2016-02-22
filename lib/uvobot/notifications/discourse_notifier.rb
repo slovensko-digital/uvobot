@@ -32,22 +32,28 @@ module Uvobot
 
       def announcement_to_topic(announcement)
         detail = @scraper.get_announcement_detail(announcement[:link][:href])
+        body_messages = ["**Obstarávateľ:** #{announcement[:procurer]}",
+                         "**Predmet obstarávania:** #{announcement[:procurement_subject]}",
+                         detail_messages(detail),
+                         "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"]
 
         {
           title: announcement[:procurement_subject].to_s,
-          body: ["**Obstarávateľ:** #{announcement[:procurer]}",
-                 "**Predmet obstarávania:** #{announcement[:procurement_subject]}",
-                 detail_message(detail),
-                 "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"].join("  \n")
+          body: body_messages.flatten(1).join("  \n")
         }
       end
 
-      def detail_message(detail)
+      def detail_messages(detail)
         if detail
-          "**Cena:** #{detail[:amount]}"
+          ["**Cena:** #{fallback_if_nil(detail[:amount])}",
+           "**Druh postupu:** #{fallback_if_nil(detail[:procurement_type])}"]
         else
-          '**Detaily sa nepodarilo extrahovať.**'
+          ['**Detaily sa nepodarilo extrahovať.**']
         end
+      end
+
+      def fallback_if_nil(value)
+        value || 'Nepodarilo sa extrahovať'
       end
     end
   end

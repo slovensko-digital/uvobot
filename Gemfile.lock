@@ -28,6 +28,9 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.10.0)
       faraday (>= 0.7.4, < 0.10)
+    httparty (0.13.7)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
     ice_nine (0.11.2)
     json (1.8.3)
     memoizable (0.4.2)
@@ -42,6 +45,7 @@ GEM
       equalizer (~> 0.0.9)
       ice_nine (~> 0.11.0)
       procto (~> 0.0.2)
+    multi_xml (0.5.5)
     multipart-post (2.0.0)
     mutant (0.8.10)
       abstract_type (~> 0.0.7)
@@ -114,6 +118,7 @@ DEPENDENCIES
   curb
   discourse_api
   dotenv
+  httparty
   mutant-rspec
   nokogiri
   rake

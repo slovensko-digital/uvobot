@@ -32,7 +32,7 @@ RSpec.describe Uvobot::Notifications::SlackNotifier do
 end
 
 def params(message)
-  ['slack.com', payload_json_string(message)]
+  ['slack.com', body: payload_json_string(message)]
 end
 
 def payload_json_string(message)
