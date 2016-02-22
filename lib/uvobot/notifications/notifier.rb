@@ -8,7 +8,6 @@ module Uvobot
       abstract_method :matching_announcements_found
       abstract_method :no_announcements_found
       abstract_method :new_issue_not_published
-      abstract_method :scraping_error
     end
   end
 end

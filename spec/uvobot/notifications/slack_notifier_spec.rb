@@ -29,13 +29,6 @@ RSpec.describe Uvobot::Notifications::SlackNotifier do
       notifier.no_announcements_found
     end
   end
-
-  describe '.scraping_error' do
-    it 'sends correct payloads to slack' do
-      expect(curl_double).to receive(:post).with(*params('Scraping sa nepodaril kvôli zmenám na stránke.'))
-      notifier.scraping_error('Scraping sa nepodaril kvôli zmenám na stránke.')
-    end
-  end
 end
 
 def params(message)

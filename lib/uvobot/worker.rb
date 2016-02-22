@@ -11,7 +11,7 @@ module Uvobot
         notify_announcements(release_date)
       else
         return if weekend?(release_date)
-        notify_issue(issue_check)
+        @notifiers.each(&:new_issue_not_published)
       end
     end
 
@@ -28,14 +28,6 @@ module Uvobot
         @notifiers.each { |n| n.matching_announcements_found(page_info, announcements) }
       else
         @notifiers.each(&:no_announcements_found)
-      end
-    end
-
-    def notify_issue(issue_check)
-      if issue_check[:error]
-        @notifiers.each { |n| n.scraping_error(issue_check[:error]) }
-      else
-        @notifiers.each(&:new_issue_not_published)
       end
     end
   end

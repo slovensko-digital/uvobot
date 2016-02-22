@@ -18,12 +18,6 @@ RSpec.describe Uvobot::Notifications::DiscourseNotifier do
     end
   end
 
-  describe '.scraping_error' do
-    it 'does nothing' do
-      expect(notifier.scraping_error).to eq nil
-    end
-  end
-
   describe '.match_announcements_found' do
     it 'creates new topic for each announcement' do
       allow(client_double).to receive('create_topic') { true }

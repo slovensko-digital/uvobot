@@ -17,10 +17,6 @@ module Uvobot
         # noop
       end
 
-      def scraping_error
-        # noop
-      end
-
       def matching_announcements_found(_page_info, announcements)
         announcements.each do |a|
           topic = announcement_to_topic(a)
