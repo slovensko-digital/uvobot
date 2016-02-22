@@ -8,7 +8,7 @@ RSpec.describe Uvobot::Worker do
     let(:bot) { Uvobot::Worker.new(scraper, [notifier]) }
 
     it 'notifies missing issue' do
-      allow(scraper).to receive('issue_ready?') { false }
+      allow(scraper).to receive('issue_ready?') { { result: false } }
       expect(notifier).to receive(:new_issue_not_published)
       bot.run(Date.new(2016, 2, 5))
     end
@@ -16,13 +16,13 @@ RSpec.describe Uvobot::Worker do
     it 'notifies scraping error' do
       scraper = Uvobot::UvoScraper.new
       bot = Uvobot::Worker.new(scraper, [notifier])
-      allow(scraper).to receive('issue_ready?').and_raise(Uvobot::UvoScraper::ScrapingError)
+      allow(scraper).to receive('issue_ready?') { { result: false, error: 'Správa' } }
       expect(notifier).to receive(:scraping_error)
       bot.run(Date.new(2016, 2, 5))
     end
 
     it 'mutes notification of missing issue on weekend' do
-      allow(scraper).to receive('issue_ready?') { false }
+      allow(scraper).to receive('issue_ready?') { { result: false } }
 
       expect(notifier).to_not receive(:new_issue_not_published)
       saturday = Date.new(2016, 2, 6)
@@ -34,7 +34,7 @@ RSpec.describe Uvobot::Worker do
     end
 
     it 'notifies no announcements found' do
-      allow(scraper).to receive('issue_ready?') { true }
+      allow(scraper).to receive('issue_ready?') { { result: true } }
       allow(scraper).to receive('get_announcements') do
         ['', []]
       end
@@ -43,7 +43,7 @@ RSpec.describe Uvobot::Worker do
     end
 
     it 'notifies announcements found' do
-      allow(scraper).to receive('issue_ready?') { true }
+      allow(scraper).to receive('issue_ready?') { { result: true } }
       allow(scraper).to receive('get_announcements') do
         ['', [{}, {}]]
       end

@@ -17,13 +17,14 @@ module Uvobot
     end
 
     def issue_ready?(release_date)
+      result = {}
       search_query = "?date=#{release_date.strftime('%d.%m.%Y')}"
 
       html = @html_client.get(NEW_ISSUE_URL + search_query, verify: false).body
-      result = header_includes_date?(html, release_date)
+      result[:result] = header_includes_date?(html, release_date)
 
-      if !result && !@parser.issue_page_valid?(html)
-        raise ScrapingError, 'Stránka aktuálneho vestníka, bola pravdepodobne zmenená'
+      if !result[:result] && !@parser.issue_page_valid?(html)
+        result[:error] = 'Stránka aktuálneho vestníka, bola pravdepodobne zmenená'
       end
       result
     end

@@ -6,14 +6,13 @@ module Uvobot
     end
 
     def run(release_date)
-      if @scraper.issue_ready?(release_date)
+      issue_check = @scraper.issue_ready?(release_date)
+      if issue_check[:result]
         notify_announcements(release_date)
       else
         return if weekend?(release_date)
-        @notifiers.each(&:new_issue_not_published)
+        notify_issue(issue_check)
       end
-    rescue @scraper.class::ScrapingError => e
-      @notifiers.each { |n| n.scraping_error(e.message) }
     end
 
     private
@@ -29,6 +28,14 @@ module Uvobot
         @notifiers.each { |n| n.matching_announcements_found(page_info, announcements) }
       else
         @notifiers.each(&:no_announcements_found)
+      end
+    end
+
+    def notify_issue(issue_check)
+      if issue_check[:error]
+        @notifiers.each { |n| n.scraping_error(issue_check[:error]) }
+      else
+        @notifiers.each(&:new_issue_not_published)
       end
     end
   end

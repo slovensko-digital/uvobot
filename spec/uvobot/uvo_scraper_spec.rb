@@ -11,7 +11,7 @@ RSpec.describe Uvobot::UvoScraper do
       allow(curl_double).to receive_message_chain('get.body') do
         File.read('./spec/support/fixtures/new_issue_uvo_page.html')
       end
-      expect(scraper.issue_ready?(Date.new(2016, 2, 2))).to eq true
+      expect(scraper.issue_ready?(Date.new(2016, 2, 2))[:result]).to eq true
     end
 
     it 'returns false when new issue is missing' do
@@ -19,7 +19,7 @@ RSpec.describe Uvobot::UvoScraper do
         File.read('./spec/support/fixtures/new_issue_uvo_page.html')
       end
       scraper = Uvobot::UvoScraper.new(Uvobot::UvoParser, curl_double)
-      expect(scraper.issue_ready?(Date.new(2016, 2, 3))).to eq false
+      expect(scraper.issue_ready?(Date.new(2016, 2, 3))[:result]).to eq false
     end
 
     it 'returns false when no issue found for date is displayed' do
@@ -27,13 +27,16 @@ RSpec.describe Uvobot::UvoScraper do
         File.read('./spec/support/fixtures/issue_for_date_not_found_page.html')
       end
       scraper = Uvobot::UvoScraper.new(Uvobot::UvoParser, curl_double)
-      expect(scraper.issue_ready?(Date.new(2016, 2, 3))).to eq false
+      expect(scraper.issue_ready?(Date.new(2016, 2, 3))[:result]).to eq false
     end
 
     it 'fails if the issue page is not valid (change of structure)' do
       allow(curl_double).to receive_message_chain('get.body') { '' }
       scraper = Uvobot::UvoScraper.new(Uvobot::UvoParser, curl_double)
-      expect { scraper.issue_ready?(Date.today) }.to raise_error Uvobot::UvoScraper::ScrapingError
+
+      issue_check = scraper.issue_ready?(Date.new(2016, 2, 3))
+      expect(issue_check[:result]).to eq false
+      expect(issue_check[:error]).to eq 'Stránka aktuálneho vestníka, bola pravdepodobne zmenená'
     end
   end
 
