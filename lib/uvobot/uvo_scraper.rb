@@ -8,7 +8,7 @@ module Uvobot
     NEW_ISSUE_URL = "#{BULLETIN_URL}/vestnik-a-registre/vestnik-479.html".freeze
     IT_CONTRACTS_CODES = ['48000000-8', '72000000-5'].freeze
 
-    class ScrapingError < StandardError
+    class InvalidIssuePage < StandardError
     end
 
     def initialize(parser = Uvobot::UvoParser, html_client = HTTParty)
@@ -22,9 +22,7 @@ module Uvobot
       html = @html_client.get(NEW_ISSUE_URL + search_query, verify: false).body
       result = header_includes_date?(html, release_date)
 
-      if !result && !@parser.issue_page_valid?(html)
-        raise 'Stránka aktuálneho vestníka, bola pravdepodobne zmenená - zlyhala jej validácia.'
-      end
+      raise InvalidIssuePage if !result && !@parser.issue_page_valid?(html)
       result
     end
 

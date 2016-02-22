@@ -32,8 +32,7 @@ RSpec.describe Uvobot::UvoScraper do
 
     it 'fails if the issue page is not valid (change of structure)' do
       allow(curl_double).to receive_message_chain('get.body') { '' }
-      message = 'Stránka aktuálneho vestníka, bola pravdepodobne zmenená - zlyhala jej validácia.'
-      expect { scraper.issue_ready?(Date.new(2016, 2, 3)) }.to raise_error message
+      expect { scraper.issue_ready?(Date.new(2016, 2, 3)) }.to raise_error Uvobot::UvoScraper::InvalidIssuePage
     end
   end
 
