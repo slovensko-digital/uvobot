@@ -59,6 +59,14 @@ module Uvobot
       doc(html).css('h1').text
     end
 
+    def self.issue_page_valid?(html)
+      h_doc = doc(html)
+      header = h_doc.xpath('//h1[starts-with(text(), "Vestník")]').first
+      no_issue_found_message = h_doc.xpath('//p[starts-with(text(), "Vestník podla zadaných")]').first
+
+      header || no_issue_found_message
+    end
+
     def self.doc(html)
       Nokogiri::HTML(html)
     end

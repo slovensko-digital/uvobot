@@ -13,6 +13,14 @@ RSpec.describe Uvobot::Worker do
       bot.run(Date.new(2016, 2, 5))
     end
 
+    it 'notifies scraping error' do
+      scraper = Uvobot::UvoScraper.new
+      bot = Uvobot::Worker.new(scraper, [notifier])
+      allow(scraper).to receive('issue_ready?').and_raise(Uvobot::UvoScraper::ScrapingError)
+      expect(notifier).to receive(:scraping_error)
+      bot.run(Date.new(2016, 2, 5))
+    end
+
     it 'mutes notification of missing issue on weekend' do
       allow(scraper).to receive('issue_ready?') { false }
 

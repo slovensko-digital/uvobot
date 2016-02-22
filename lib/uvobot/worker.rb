@@ -12,6 +12,8 @@ module Uvobot
         return if weekend?(release_date)
         @notifiers.each(&:new_issue_not_published)
       end
+    rescue @scraper.class::ScrapingError => e
+      @notifiers.each { |n| n.scraping_error(e.message) }
     end
 
     private

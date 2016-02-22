@@ -26,6 +26,10 @@ module Uvobot
         send_message('Dnes som nenašiel žiadne nové IT zákazky.')
       end
 
+      def scraping_error(message)
+        send_message(message)
+      end
+
       private
 
       def send_message(text)
