@@ -23,7 +23,7 @@ module Uvobot
       result = header_includes_date?(html, release_date)
 
       if !result && !@parser.issue_page_valid?(html)
-        fail ScrapingError, 'Stránka aktuálneho vestníka, bola pravdepodobne zmenená'
+        raise ScrapingError, 'Stránka aktuálneho vestníka, bola pravdepodobne zmenená'
       end
       result
     end
