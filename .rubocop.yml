@@ -8,4 +8,9 @@ Lint/HandleExceptions:
   Exclude:
     - Rakefile
 
-
+Style/SignalException:
+  EnforcedStyle: only_raise
+  SupportedStyles:
+    - only_raise
+    - only_fail
+    - semantic

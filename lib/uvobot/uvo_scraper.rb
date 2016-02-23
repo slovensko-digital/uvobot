@@ -8,6 +8,9 @@ module Uvobot
     NEW_ISSUE_URL = "#{BULLETIN_URL}/vestnik-a-registre/vestnik-479.html".freeze
     IT_CONTRACTS_CODES = ['48000000-8', '72000000-5'].freeze
 
+    class InvalidIssuePage < StandardError
+    end
+
     def initialize(parser = Uvobot::UvoParser, html_client = HTTParty)
       @parser = parser
       @html_client = html_client
@@ -17,8 +20,15 @@ module Uvobot
       search_query = "?date=#{release_date.strftime('%d.%m.%Y')}"
 
       html = @html_client.get(NEW_ISSUE_URL + search_query, verify: false).body
+      result = header_includes_date?(html, release_date)
+
+      raise InvalidIssuePage if !result && !@parser.issue_page_valid?(html)
+      result
+    end
+
+    def header_includes_date?(html, date)
       header = @parser.parse_issue_header(html)
-      identifier = release_date.strftime('/%Y - %d.%m.%Y')
+      identifier = date.strftime('/%Y - %d.%m.%Y')
       header.include?(identifier)
     end
 

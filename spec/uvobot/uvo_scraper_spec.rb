@@ -21,6 +21,19 @@ RSpec.describe Uvobot::UvoScraper do
       scraper = Uvobot::UvoScraper.new(Uvobot::UvoParser, curl_double)
       expect(scraper.issue_ready?(Date.new(2016, 2, 3))).to eq false
     end
+
+    it 'returns false when no issue found for date is displayed' do
+      allow(curl_double).to receive_message_chain('get.body') do
+        File.read('./spec/support/fixtures/issue_for_date_not_found_page.html')
+      end
+      scraper = Uvobot::UvoScraper.new(Uvobot::UvoParser, curl_double)
+      expect(scraper.issue_ready?(Date.new(2016, 2, 3))).to eq false
+    end
+
+    it 'fails if the issue page is not valid (change of structure)' do
+      allow(curl_double).to receive_message_chain('get.body') { '' }
+      expect { scraper.issue_ready?(Date.new(2016, 2, 3)) }.to raise_error Uvobot::UvoScraper::InvalidIssuePage
+    end
   end
 
   describe '.get_announcements' do
