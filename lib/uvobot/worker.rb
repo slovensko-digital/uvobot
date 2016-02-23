@@ -6,8 +6,7 @@ module Uvobot
     end
 
     def run(release_date)
-      issue_check = @scraper.issue_ready?(release_date)
-      if issue_check[:result]
+      if @scraper.issue_ready?(release_date)
         notify_announcements(release_date)
       else
         return if weekend?(release_date)
