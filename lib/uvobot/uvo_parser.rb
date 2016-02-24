@@ -55,7 +55,7 @@ module Uvobot
       xpath = '//span[contains(text(),"NÁZOV A ADRESA HOSPODÁRSKEHO SUBJEKTU, V PROSPECH KTORÉHO SA ROZHODLO")]'
       with_node(html, xpath) do |node|
         winner_address = node.parent.next.next.text.strip
-        address_bits = winner_address.gsub(/:\n\s*/, ': ').split("\n").map(&:strip).delete_if { |l| l == '' }
+        address_bits = winner_address.gsub(/:\s*/, ': ').split("\n").map(&:strip).delete_if { |l| l == '' }
         address_bits.join("\n")
       end
     end

@@ -46,7 +46,10 @@ module Uvobot
       def detail_messages(detail)
         if detail
           ["**Cena:** #{fallback_if_nil(detail[:amount])}",
-           "**Druh postupu:** #{fallback_if_nil(detail[:procurement_type])}"]
+           "**Druh postupu:** #{fallback_if_nil(detail[:procurement_type])}",
+           "**Trvanie projektu:** #{fallback_if_nil(detail[:project_runtime])}",
+           "**Lehota na predkladanie ponúk:** #{fallback_if_nil(detail[:offer_placing_term])}",
+           "**Víťaz obstarávania:**  \n #{fallback_if_nil(detail[:procurement_winner])}"]
         else
           ['**Detaily sa nepodarilo extrahovať.**']
         end
