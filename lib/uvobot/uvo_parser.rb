@@ -29,25 +29,51 @@ module Uvobot
       # there are multiple formats of detail page, this method does not handle them all for now
       result = {
         amount: parse_amount(html),
-        procurement_type: parse_procurement_type(html)
+        procurement_type: parse_procurement_type(html),
+        procurement_winner: parse_procurement_winner(html),
+        offer_placing_term: parse_offer_placing_term(html),
+        project_runtime: parse_project_runtime(html)
       }
 
       result.values.none? ? nil : result
     end
 
     def self.parse_amount(html)
-      amount_nodes = doc(html).xpath('//div[text()="Hodnota            "]')
-      return nil if amount_nodes.count == 0
-
-      amount_nodes.first.css('span').map { |s| s.text.strip }.join(' ')
+      with_node(html, '//div[text()="Hodnota            "]') do |node|
+        node.css('span').map { |s| s.text.strip }.join(' ')
+      end
     end
 
     def self.parse_procurement_type(html)
-      type_nodes = doc(html).xpath('//strong[starts-with(text(),"Druh postupu:")]')
-      return nil if type_nodes.count == 0
+      with_node(html, '//strong[starts-with(text(),"Druh postupu:")]') do |node|
+        wrapper_div_text = node.parent.text
+        wrapper_div_text.gsub('Druh postupu:', '').strip
+      end
+    end
 
-      wrapper_div_text = type_nodes.first.parent.text
-      wrapper_div_text.gsub('Druh postupu:', '').strip
+    def self.parse_procurement_winner(html)
+      xpath = '//span[contains(text(),"NÁZOV A ADRESA HOSPODÁRSKEHO SUBJEKTU, V PROSPECH KTORÉHO SA ROZHODLO")]'
+      with_node(html, xpath) do |node|
+        winner_address = node.parent.next.next.text.strip
+        address_bits = winner_address.gsub(/:\n\s*/, ': ').split("\n").map(&:strip).delete_if { |l| l == '' }
+        address_bits.join("\n")
+      end
+    end
+
+    def self.parse_offer_placing_term(html)
+      xpath = '//span[contains(text(),"Podmienky na získanie súťažných podkladov a doplňujúcich dokumentov")]'
+      with_node(html, xpath) do |node|
+        term_text = node.parent.next.next.next.next.text
+        term_text.gsub("Dátum a čas: ", '')
+      end
+    end
+
+    def self.parse_project_runtime(html)
+      with_node(html, '//span[contains(text(),"TRVANIE ZÁKAZKY ALEBO LEHOTA NA DOKONČENIE")]') do |node|
+        label_text = node.parent.next.next.text
+        value_text = node.parent.next.next.next.next.text
+        "#{normalize_whitespace(label_text)} - #{normalize_whitespace(value_text)}"
+      end
     end
 
     def self.parse_page_info(html)
@@ -69,6 +95,18 @@ module Uvobot
 
     def self.doc(html)
       Nokogiri::HTML(html)
+    end
+
+    def self.with_node(html, xpath)
+      node = doc(html).at_xpath(xpath)
+      return nil if node.nil?
+      yield node
+    end
+
+    def self.normalize_whitespace(text)
+      result = text.clone
+      result.gsub!(/(\s){2,}/, '\\1')
+      result.strip
     end
   end
 end

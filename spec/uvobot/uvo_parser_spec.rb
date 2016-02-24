@@ -24,11 +24,26 @@ RSpec.describe Uvobot::UvoParser do
   end
 
   describe '.parse_detail' do
-    it 'parses out announcement detail info' do
-      html = File.read('./spec/support/fixtures/announcement_detail.html')
+    it 'parses out procurement announcement detail info' do
+      html = File.read('./spec/support/fixtures/procurement_announcement_detail.html')
       detail = parser.parse_detail(html)
       expect(detail[:amount]).to eq '270 000,0000 EUR'
       expect(detail[:procurement_type]).to eq 'Verejná súťaž'
+      expect(detail[:offer_placing_term]).to eq '21.03.2016 09:00'
+      expect(detail[:project_runtime]).to eq 'Obdobie v mesiacoch (od zadania zákazky) - Hodnota: 60'
+    end
+
+    it 'parses out procurement result detail info' do
+      html = File.read('./spec/support/fixtures/procurement_result_announcement_detail.html')
+      detail = parser.parse_detail(html)
+      expect(detail[:amount]).to eq '183 613,5000 EUR'
+      expect(detail[:procurement_type]).to eq 'Verejná súťaž'
+      winner_address = ['Aliter Technologies, a.s.',
+                        'Vnútroštátne identifikačné číslo: 36831221',
+                        'Turčianska 16 , 82109 Bratislava',
+                        'Slovensko',
+                        'Telefón: +421 255646350'].join("\n")
+      expect(detail[:procurement_winner]).to eq winner_address
     end
 
     it 'returns nil if no detail info was found' do

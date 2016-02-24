@@ -62,9 +62,15 @@ RSpec.describe Uvobot::UvoScraper do
   describe '.get_announcement_detail' do
     it 'parses out detail info' do
       allow(curl_double).to receive_message_chain('get.body') do
-        File.read('./spec/support/fixtures/announcement_detail.html')
+        File.read('./spec/support/fixtures/procurement_announcement_detail.html')
       end
-      detail = { amount: '270 000,0000 EUR', procurement_type: 'Verejná súťaž' }
+      detail = {
+        amount: '270 000,0000 EUR',
+        procurement_type: 'Verejná súťaž',
+        procurement_winner: nil,
+        project_runtime: 'Obdobie v mesiacoch (od zadania zákazky) - Hodnota: 60',
+        offer_placing_term: '21.03.2016 09:00'
+      }
       expect(scraper.get_announcement_detail('dummy url')).to eq detail
     end
 
