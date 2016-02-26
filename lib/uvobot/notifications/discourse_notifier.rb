@@ -34,7 +34,7 @@ module Uvobot
         detail = @scraper.get_announcement_detail(announcement[:link][:href])
         body_messages = ["**Obstarávateľ:** #{announcement[:procurer]}",
                          "**Predmet obstarávania:** #{announcement[:procurement_subject]}",
-                         detail_messages(detail),
+                         compile_detail_messages(detail),
                          "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"]
 
         {
@@ -43,16 +43,22 @@ module Uvobot
         }
       end
 
-      def detail_messages(detail)
+      def compile_detail_messages(detail)
         if detail
-          ["**Cena:** #{fallback_if_nil(detail[:amount])}",
-           "**Druh postupu:** #{fallback_if_nil(detail[:procurement_type])}",
-           "**Trvanie projektu:** #{fallback_if_nil(detail[:project_runtime])}",
-           "**Lehota na predkladanie ponúk:** #{fallback_if_nil(detail[:offer_placing_term])}",
-           "**Víťaz obstarávania:**  \n #{fallback_if_nil(detail[:procurement_winner])}"]
+          detail.keys.map { |k| detail_messages[k].gsub('%{content}', fallback_if_nil(detail[k])) }
         else
           ['**Detaily sa nepodarilo extrahovať.**']
         end
+      end
+
+      def detail_messages
+        {
+          amount: '**Cena:** %{content}',
+          procurement_type: '**Druh postupu:** %{content}',
+          project_runtime: '**Trvanie projektu:** %{content}',
+          offer_placing_term: '**Lehota na predkladanie ponúk:** %{content}',
+          procurement_winner: "**Víťaz obstarávania:**  \n %{content}"
+        }
       end
 
       def fallback_if_nil(value)

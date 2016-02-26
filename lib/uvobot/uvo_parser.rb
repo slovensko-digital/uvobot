@@ -27,10 +27,21 @@ module Uvobot
     end
 
     def self.parse_detail(html)
-      result = Uvobot::Details::Parser.new(html).parse_detail
+      d_parser = Uvobot::Details::Parser.new(html)
+      case type_header_text(html)
+      when 'OZNÁMENIE O VYHLÁSENÍ VEREJNÉHO OBSTARÁVANIA'
+        result = d_parser.procurement_announcement
+      when 'OZNÁMENIE O VÝSLEDKU VEREJNÉHO OBSTARÁVANIA'
+        result = d_parser.procurement_result
+      else
+        return nil
+      end
       result.values.none? ? nil : result
-    rescue Uvobot::Details::Parser::DetailRecognitionError
-      nil
+    end
+
+    def self.type_header_text(html)
+      header = doc(html).css('div.MainHeader')[1]
+      header ? header.text.strip : nil
     end
 
     def self.parse_page_info(html)
