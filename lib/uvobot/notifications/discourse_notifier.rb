@@ -3,6 +3,14 @@ require_relative 'notifier'
 module Uvobot
   module Notifications
     class DiscourseNotifier < Notifier
+      DETAIL_MESSAGES = {
+        amount: '**Cena:** %s',
+        procurement_type: '**Druh postupu:** %s',
+        project_runtime: '**Trvanie projektu:** %s',
+        offer_placing_term: '**Lehota na predkladanie ponúk:** %s',
+        procurement_winner: "**Víťaz obstarávania:**  \n %s"
+      }.freeze
+
       def initialize(discourse_client, category, scraper)
         @client = discourse_client
         @category = category
@@ -43,26 +51,11 @@ module Uvobot
         }
       end
 
-      def compile_detail_messages(detail)
-        if detail
-          detail.keys.map { |k| detail_messages[k].gsub('%{content}', fallback_if_nil(detail[k])) }
-        else
-          ['**Detaily sa nepodarilo extrahovať.**']
+      def compile_detail_messages(details)
+        return ['**Detaily sa nepodarilo extrahovať.**'] if details.nil?
+        details.each_with_object([]) do |(type, value), messages|
+          messages << DETAIL_MESSAGES[type] % (value || 'Nepodarilo sa extrahovať')
         end
-      end
-
-      def detail_messages
-        {
-          amount: '**Cena:** %{content}',
-          procurement_type: '**Druh postupu:** %{content}',
-          project_runtime: '**Trvanie projektu:** %{content}',
-          offer_placing_term: '**Lehota na predkladanie ponúk:** %{content}',
-          procurement_winner: "**Víťaz obstarávania:**  \n %{content}"
-        }
-      end
-
-      def fallback_if_nil(value)
-        value || 'Nepodarilo sa extrahovať'
       end
     end
   end
