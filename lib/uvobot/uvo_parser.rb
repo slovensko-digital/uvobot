@@ -1,5 +1,4 @@
 require 'nokogiri'
-require_relative 'details/parser'
 
 module Uvobot
   class UvoParser
@@ -27,12 +26,11 @@ module Uvobot
     end
 
     def self.parse_detail(html)
-      d_parser = Uvobot::Details::Parser.new(html)
       case type_header_text(html)
       when 'OZNÁMENIE O VYHLÁSENÍ VEREJNÉHO OBSTARÁVANIA'
-        result = d_parser.procurement_announcement
+        result = parse_procurement_announcement(html)
       when 'OZNÁMENIE O VÝSLEDKU VEREJNÉHO OBSTARÁVANIA'
-        result = d_parser.procurement_result
+        result = parse_procurement_result(html)
       else
         return nil
       end
@@ -42,6 +40,73 @@ module Uvobot
     def self.type_header_text(html)
       header = doc(html).css('div.MainHeader')[1]
       header ? header.text.strip : nil
+    end
+
+    def self.parse_procurement_announcement(html)
+      {
+        amount: parse_amount(html),
+        procurement_type: parse_procurement_type(html),
+        project_runtime: parse_project_runtime(html),
+        offer_placing_term: parse_offer_placing_term(html)
+      }
+    end
+
+    def self.parse_procurement_result(html)
+      {
+        amount: parse_amount(html),
+        procurement_type: parse_procurement_type(html),
+        procurement_winner: parse_procurement_winner(html)
+      }
+    end
+
+    def self.parse_amount(html)
+      with_node(html, '//div[text()="Hodnota            "]') do |node|
+        node.css('span').map { |s| s.text.strip }.join(' ')
+      end
+    end
+
+    def self.parse_procurement_type(html)
+      with_node(html, '//strong[starts-with(text(),"Druh postupu:")]') do |node|
+        wrapper_div_text = node.parent.text
+        wrapper_div_text.gsub('Druh postupu:', '').strip
+      end
+    end
+
+    def self.parse_offer_placing_term(html)
+      xpath = '//span[contains(text(),"Podmienky na získanie súťažných podkladov a doplňujúcich dokumentov")]'
+      with_node(html, xpath) do |node|
+        term_text = node.parent.next.next.next.next.text
+        term_text.gsub("Dátum a čas: ", '')
+      end
+    end
+
+    def self.parse_project_runtime(html)
+      with_node(html, '//span[contains(text(),"TRVANIE ZÁKAZKY ALEBO LEHOTA NA DOKONČENIE")]') do |node|
+        label_text = node.parent.next.next.text
+        value_text = node.parent.next.next.next.next.text
+        "#{normalize_whitespace(label_text)} - #{normalize_whitespace(value_text)}"
+      end
+    end
+
+    def self.parse_procurement_winner(html)
+      xpath = '//span[contains(text(),"NÁZOV A ADRESA HOSPODÁRSKEHO SUBJEKTU, V PROSPECH KTORÉHO SA ROZHODLO")]'
+      with_node(html, xpath) do |node|
+        winner_address = node.parent.next.next.text.strip
+        address_bits = winner_address.gsub(/:\s*/, ': ').split("\n").map(&:strip).delete_if { |l| l == '' }
+        address_bits.join("\n")
+      end
+    end
+
+    def self.with_node(html, xpath)
+      node = doc(html).at_xpath(xpath)
+      return nil if node.nil?
+      yield node
+    end
+
+    def self.normalize_whitespace(text)
+      result = text.clone
+      result.gsub!(/(\s){2,}/, '\\1')
+      result.strip
     end
 
     def self.parse_page_info(html)
