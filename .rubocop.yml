@@ -14,3 +14,11 @@ Style/SignalException:
     - only_raise
     - only_fail
     - semantic
+
+Metrics/ClassLength:
+  CountComments: false  # count full line comments?
+  Max: 200
+
+Metrics/ModuleLength:
+  CountComments: false  # count full line comments?
+  Max: 200
