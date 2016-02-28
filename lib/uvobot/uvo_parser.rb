@@ -25,12 +25,20 @@ module Uvobot
       bulletin_url + tr_node.attributes['onclick'].text.scan(/'(.*)'/).first[0]
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/MethodLength
     def self.parse_detail(html)
       case type_header_text(html)
       when 'OZNÁMENIE O VYHLÁSENÍ VEREJNÉHO OBSTARÁVANIA'
         result = parse_procurement_announcement(html)
       when 'OZNÁMENIE O VÝSLEDKU VEREJNÉHO OBSTARÁVANIA'
         result = parse_procurement_result(html)
+      when 'OZNÁMENIE O DODATOČNÝCH INFORMÁCIÁCH, INFORMÁCIÁCH O NEUKONČENOM KONANÍ ALEBO KORIGENDE'
+        result = parse_addendum_announcement(html)
+      when 'VÝZVA NA PREDKLADANIE PONÚK (PODLIMITNÉ ZÁKAZKY)'
+        result = parse_call_for_proposals(html)
+      when 'INFORMÁCIA O UZAVRETÍ ZMLUVY (PODLIMITNÉ ZÁKAZKY)'
+        result = parse_concluded_contract_info(html)
       else
         return nil
       end
@@ -47,7 +55,7 @@ module Uvobot
         amount: parse_amount(html),
         procurement_type: parse_procurement_type(html),
         project_runtime: parse_project_runtime(html),
-        offer_placing_term: parse_offer_placing_term(html)
+        proposal_placing_term: parse_proposal_placing_term(html)
       }
     end
 
@@ -59,9 +67,45 @@ module Uvobot
       }
     end
 
+    def self.parse_addendum_announcement(html)
+      {
+        procurement_type: parse_procurement_type(html)
+      }
+    end
+
+    def self.parse_call_for_proposals(html)
+      {
+        amount: parse_amount_interval(html),
+        proposal_placing_term: parse_proposal_placing_term(html),
+        project_contract_runtime: parse_contract_runtime(html)
+      }
+    end
+
+    def self.parse_concluded_contract_info(html)
+      {
+        amount: parse_contract_amount(html),
+        procurement_winner: parse_contract_winner(html)
+      }
+    end
+
     def self.parse_amount(html)
       with_node(html, '//div[text()="Hodnota            "]') do |node|
         node.css('span').map { |s| s.text.strip }.join(' ')
+      end
+    end
+
+    def self.parse_amount_interval(html)
+      with_node(html, '//div[starts-with(text(),"Hodnota/Od:")]') do |node|
+        normalize_whitespace(node.text.tr("\n", ' '))
+      end
+    end
+
+    def self.parse_contract_amount(html)
+      with_node(html, '//span[contains(text(),"Informácie o hodnote zmluvy")]') do |node|
+        parent = node.parent
+        # real contract amount can have multiple lines
+        amount_texts = append_siblings_texts(parent, []).delete_if { |t| t.strip == '' }
+        normalize_whitespace(amount_texts.join(' - '))
       end
     end
 
@@ -72,7 +116,7 @@ module Uvobot
       end
     end
 
-    def self.parse_offer_placing_term(html)
+    def self.parse_proposal_placing_term(html)
       xpath = '//span[contains(text(),"Podmienky na získanie súťažných podkladov a doplňujúcich dokumentov")]'
       with_node(html, xpath) do |node|
         term_text = node.parent.next.next.next.next.text
@@ -88,8 +132,25 @@ module Uvobot
       end
     end
 
+    def self.parse_contract_runtime(html)
+      with_node(html, '//span[contains(text(),"Trvanie zmluvy alebo lehota dodania")]') do |node|
+        label_text = node.parent.next.next.text
+        value_text = node.parent.next.next.next.text
+        "#{normalize_whitespace(label_text)} - #{normalize_whitespace(value_text)}"
+      end
+    end
+
     def self.parse_procurement_winner(html)
       xpath = '//span[contains(text(),"NÁZOV A ADRESA HOSPODÁRSKEHO SUBJEKTU, V PROSPECH KTORÉHO SA ROZHODLO")]'
+      with_node(html, xpath) do |node|
+        winner_address = node.parent.next.next.text.strip
+        address_bits = winner_address.gsub(/:\s*/, ': ').split("\n").map(&:strip).delete_if { |l| l == '' }
+        address_bits.join("\n")
+      end
+    end
+
+    def self.parse_contract_winner(html)
+      xpath = '//span[contains(text(),"Názov a adresa dodávateľa s ktorým sa uzatvorila zmluva")]'
       with_node(html, xpath) do |node|
         winner_address = node.parent.next.next.text.strip
         address_bits = winner_address.gsub(/:\s*/, ': ').split("\n").map(&:strip).delete_if { |l| l == '' }
@@ -101,6 +162,13 @@ module Uvobot
       node = doc(html).at_xpath(xpath)
       return nil if node.nil?
       yield node
+    end
+
+    def self.append_siblings_texts(node, texts)
+      return texts if node.next.nil?
+      sibling = node.next
+      texts << sibling.text
+      append_siblings_texts(sibling, texts)
     end
 
     def self.normalize_whitespace(text)

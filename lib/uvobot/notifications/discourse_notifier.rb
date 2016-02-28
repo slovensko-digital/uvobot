@@ -7,7 +7,8 @@ module Uvobot
         amount: '**Cena:** %s',
         procurement_type: '**Druh postupu:** %s',
         project_runtime: '**Trvanie projektu:** %s',
-        offer_placing_term: '**Lehota na predkladanie ponúk:** %s',
+        project_contract_runtime: '**Trvanie zmluvy, alebo lehota dodania:** %s',
+        proposal_placing_term: '**Lehota na predkladanie ponúk:** %s',
         procurement_winner: "**Víťaz obstarávania:**  \n %s"
       }.freeze
 
@@ -42,7 +43,7 @@ module Uvobot
         detail = @scraper.get_announcement_detail(announcement[:link][:href])
         body_messages = ["**Obstarávateľ:** #{announcement[:procurer]}",
                          "**Predmet obstarávania:** #{announcement[:procurement_subject]}",
-                         compile_detail_messages(detail),
+                         build_detail_messages(detail),
                          "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"]
 
         {
@@ -51,7 +52,7 @@ module Uvobot
         }
       end
 
-      def compile_detail_messages(details)
+      def build_detail_messages(details)
         return ['**Detaily sa nepodarilo extrahovať.**'] if details.nil?
         details.each_with_object([]) do |(type, value), messages|
           messages << DETAIL_MESSAGES[type] % (value || 'Nepodarilo sa extrahovať')

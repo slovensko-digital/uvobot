@@ -68,7 +68,7 @@ RSpec.describe Uvobot::UvoScraper do
         amount: '270 000,0000 EUR',
         procurement_type: 'Verejná súťaž',
         project_runtime: 'Obdobie v mesiacoch (od zadania zákazky) - Hodnota: 60',
-        offer_placing_term: '21.03.2016 09:00'
+        proposal_placing_term: '21.03.2016 09:00'
       }
       expect(scraper.get_announcement_detail('dummy url')).to eq detail
     end

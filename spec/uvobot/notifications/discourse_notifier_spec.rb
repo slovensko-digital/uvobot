@@ -26,7 +26,7 @@ RSpec.describe Uvobot::Notifications::DiscourseNotifier do
           amount: '1000 EUR',
           procurement_type: nil,
           project_runtime: 'runtime',
-          offer_placing_term: 'term',
+          proposal_placing_term: 'term',
           procurement_winner: 'winner'
         }
       end

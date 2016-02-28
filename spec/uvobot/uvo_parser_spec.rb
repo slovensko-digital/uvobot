@@ -29,7 +29,7 @@ RSpec.describe Uvobot::UvoParser do
       detail = parser.parse_detail(html)
       expect(detail[:amount]).to eq '270 000,0000 EUR'
       expect(detail[:procurement_type]).to eq 'Verejná súťaž'
-      expect(detail[:offer_placing_term]).to eq '21.03.2016 09:00'
+      expect(detail[:proposal_placing_term]).to eq '21.03.2016 09:00'
       expect(detail[:project_runtime]).to eq 'Obdobie v mesiacoch (od zadania zákazky) - Hodnota: 60'
     end
 
@@ -43,6 +43,34 @@ RSpec.describe Uvobot::UvoParser do
                         'Turčianska 16 , 82109 Bratislava',
                         'Slovensko',
                         'Telefón: +421 255646350'].join("\n")
+      expect(detail[:procurement_winner]).to eq winner_address
+    end
+
+    it 'parses out procurement addendum announcement detail info' do
+      html = File.read('./spec/support/fixtures/procurement_addendum_announcement_detail.html')
+      detail = parser.parse_detail(html)
+      expect(detail[:procurement_type]).to eq 'Verejná súťaž'
+    end
+
+    it 'parses out call for proposals detail info' do
+      html = File.read('./spec/support/fixtures/call_for_proposals_detail.html')
+      detail = parser.parse_detail(html)
+      expect(detail[:amount]).to eq 'Hodnota/Od: 180 000,0000 Do: 205 000,0000 EUR'
+      expect(detail[:proposal_placing_term]).to eq '10.02.2016 10:00'
+      expect(detail[:project_contract_runtime]).to eq 'Obdobie v mesiacoch (od zadania zákazky) - Zadajte hodnotu: 48'
+    end
+
+    it 'parses out concluded contract detail info' do
+      html = File.read('./spec/support/fixtures/concluded_contract_info_detail.html')
+      detail = parser.parse_detail(html)
+      amount = 'Hodnota 147 202,4000 EUR - Bez DPH - Pri hodnote za rok alebo za mesiac uveďte Počet rokov - Hodnota: 3'
+      expect(detail[:amount]).to eq amount
+      winner_address = ['ArcGEO Information Systems spol. s r.o.',
+                        'IČO: 31354882',
+                        'Blagoevova 9 , 85104 Bratislava',
+                        'Slovensko',
+                        'Telefón: +421 249203701',
+                        'Email: info@arcgeo.sk'].join("\n")
       expect(detail[:procurement_winner]).to eq winner_address
     end
 
