@@ -143,19 +143,21 @@ module Uvobot
     def self.parse_procurement_winner(html)
       xpath = '//span[contains(text(),"NÁZOV A ADRESA HOSPODÁRSKEHO SUBJEKTU, V PROSPECH KTORÉHO SA ROZHODLO")]'
       with_node(html, xpath) do |node|
-        winner_address = node.parent.next.next.text.strip
-        address_bits = winner_address.gsub(/:\s*/, ': ').split("\n").map(&:strip).delete_if { |l| l == '' }
-        address_bits.join("\n")
+        normalize_winner_address(node.parent.next.next)
       end
     end
 
     def self.parse_contract_winner(html)
       xpath = '//span[contains(text(),"Názov a adresa dodávateľa s ktorým sa uzatvorila zmluva")]'
       with_node(html, xpath) do |node|
-        winner_address = node.parent.next.next.text.strip
-        address_bits = winner_address.gsub(/:\s*/, ': ').split("\n").map(&:strip).delete_if { |l| l == '' }
-        address_bits.join("\n")
+        normalize_winner_address(node.parent.next.next)
       end
+    end
+
+    def self.normalize_winner_address(address_node)
+      winner_address = address_node.text.strip
+      address_bits = winner_address.gsub(/:\s*/, ': ').split("\n").map(&:strip).delete_if { |l| l == '' }
+      address_bits.join("\n")
     end
 
     def self.with_node(html, xpath)
