@@ -25,29 +25,30 @@ module Uvobot
       bulletin_url + tr_node.attributes['onclick'].text.scan(/'(.*)'/).first[0]
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/MethodLength
     def self.parse_detail(html)
-      case type_header_text(html)
-      when 'OZNÁMENIE O VYHLÁSENÍ VEREJNÉHO OBSTARÁVANIA'
-        result = parse_procurement_announcement(html)
-      when 'OZNÁMENIE O VÝSLEDKU VEREJNÉHO OBSTARÁVANIA'
-        result = parse_procurement_result(html)
-      when 'OZNÁMENIE O DODATOČNÝCH INFORMÁCIÁCH, INFORMÁCIÁCH O NEUKONČENOM KONANÍ ALEBO KORIGENDE'
-        result = parse_addendum_announcement(html)
-      when 'VÝZVA NA PREDKLADANIE PONÚK (PODLIMITNÉ ZÁKAZKY)'
-        result = parse_call_for_proposals(html)
-      when 'INFORMÁCIA O UZAVRETÍ ZMLUVY (PODLIMITNÉ ZÁKAZKY)'
-        result = parse_concluded_contract_info(html)
-      else
-        return nil
-      end
-      result.values.none? ? nil : result
+      header_text = type_header_text(html)
+      result = case header_text
+               when 'OZNÁMENIE O VYHLÁSENÍ VEREJNÉHO OBSTARÁVANIA'
+                 parse_procurement_announcement(html)
+               when 'OZNÁMENIE O VÝSLEDKU VEREJNÉHO OBSTARÁVANIA'
+                 parse_procurement_result(html)
+               when 'OZNÁMENIE O DODATOČNÝCH INFORMÁCIÁCH, INFORMÁCIÁCH O NEUKONČENOM KONANÍ ALEBO KORIGENDE'
+                 parse_addendum_announcement(html)
+               when 'VÝZVA NA PREDKLADANIE PONÚK (PODLIMITNÉ ZÁKAZKY)'
+                 parse_call_for_proposals(html)
+               when 'INFORMÁCIA O UZAVRETÍ ZMLUVY (PODLIMITNÉ ZÁKAZKY)'
+                 parse_concluded_contract_info(html)
+               else
+                 {}
+               end
+      result[:announcement_type] = header_text
+      result
     end
 
     def self.type_header_text(html)
       header = doc(html).css('div.MainHeader')[1]
-      header ? header.text.strip : nil
+      header ? header.text.strip : 'Nepodarilo sa extrahovať nadpis detailu.'
     end
 
     def self.parse_procurement_announcement(html)

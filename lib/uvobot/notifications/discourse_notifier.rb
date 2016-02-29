@@ -4,10 +4,11 @@ module Uvobot
   module Notifications
     class DiscourseNotifier < Notifier
       DETAIL_MESSAGES = {
+        announcement_type: '**Typ oznamu:** %s',
         amount: '**Cena:** %s',
         procurement_type: '**Druh postupu:** %s',
         project_runtime: '**Trvanie projektu:** %s',
-        project_contract_runtime: '**Trvanie zmluvy, alebo lehota dodania:** %s',
+        project_contract_runtime: '**Trvanie zmluvy, alebo lehota dodania :** %s',
         proposal_placing_term: '**Lehota na predkladanie ponúk:** %s',
         procurement_winner: "**Víťaz obstarávania:**  \n %s"
       }.freeze
@@ -53,7 +54,6 @@ module Uvobot
       end
 
       def build_detail_messages(details)
-        return ['**Detaily sa nepodarilo extrahovať.**'] if details.nil?
         details.each_with_object([]) do |(type, value), messages|
           messages << DETAIL_MESSAGES[type] % (value || 'Nepodarilo sa extrahovať')
         end

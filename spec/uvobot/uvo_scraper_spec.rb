@@ -67,17 +67,19 @@ RSpec.describe Uvobot::UvoScraper do
       detail = {
         amount: '270 000,0000 EUR',
         procurement_type: 'Verejná súťaž',
+        announcement_type: "OZNÁMENIE O VYHLÁSENÍ VEREJNÉHO OBSTARÁVANIA",
         project_runtime: 'Obdobie v mesiacoch (od zadania zákazky) - Hodnota: 60',
         proposal_placing_term: '21.03.2016 09:00'
       }
       expect(scraper.get_announcement_detail('dummy url')).to eq detail
     end
 
-    it 'returns nil when parsing fails' do
+    it 'returns only type with warning message when detail parsing fails' do
       allow(curl_double).to receive_message_chain('get.body') do
         '<html><body><body/></html>'
       end
-      expect(scraper.get_announcement_detail('dummy url')).to eq nil
+      type_hash = { announcement_type: "Nepodarilo sa extrahovať nadpis detailu." }
+      expect(scraper.get_announcement_detail('dummy url')).to eq type_hash
     end
   end
 end

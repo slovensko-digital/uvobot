@@ -47,24 +47,5 @@ RSpec.describe Uvobot::Notifications::DiscourseNotifier do
 
       notifier.matching_announcements_found('page info', announcements)
     end
-
-    it 'handles empty details' do
-      allow(client_double).to receive('create_topic') { true }
-      allow(scraper_double).to receive('get_announcement_detail') { nil }
-      announcements = [{ link: { href: 'href', text: 'text' },
-                         procurer: 'procurer',
-                         procurement_subject: 'subject'
-                       }]
-
-      params = {
-        title: 'subject',
-        raw: "**Obstarávateľ:** procurer  \n**Predmet obstarávania:** subject" \
-             "  \n**Detaily sa nepodarilo extrahovať.**  \n**Zdroj:** [text](href)",
-        category: 'dummy category'
-      }
-      expect(client_double).to receive(:create_topic).with(params)
-
-      notifier.matching_announcements_found('page info', announcements)
-    end
   end
 end

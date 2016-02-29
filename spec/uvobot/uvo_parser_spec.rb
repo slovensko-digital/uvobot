@@ -74,8 +74,9 @@ RSpec.describe Uvobot::UvoParser do
       expect(detail[:procurement_winner]).to eq winner_address
     end
 
-    it 'returns nil if no detail info was found' do
-      expect(parser.parse_detail('')).to eq nil
+    it 'returns extraction failure message when the detail parsing failed' do
+      type_hash = { announcement_type: "Nepodarilo sa extrahovať nadpis detailu." }
+      expect(parser.parse_detail('')).to eq type_hash
     end
   end
 
