@@ -78,7 +78,7 @@ RSpec.describe Uvobot::UvoScraper do
       allow(curl_double).to receive_message_chain('get.body') do
         '<html><body><body/></html>'
       end
-      type_hash = { announcement_type: "Nepodarilo sa extrahovať nadpis detailu." }
+      type_hash = { announcement_type: "Nepodarilo sa extrahovať typ oznamu." }
       expect(scraper.get_announcement_detail('dummy url')).to eq type_hash
     end
   end

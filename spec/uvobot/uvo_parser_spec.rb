@@ -75,7 +75,7 @@ RSpec.describe Uvobot::UvoParser do
     end
 
     it 'returns extraction failure message when the detail parsing failed' do
-      type_hash = { announcement_type: "Nepodarilo sa extrahovať nadpis detailu." }
+      type_hash = { announcement_type: "Nepodarilo sa extrahovať typ oznamu." }
       expect(parser.parse_detail('')).to eq type_hash
     end
   end

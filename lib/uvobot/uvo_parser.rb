@@ -48,7 +48,7 @@ module Uvobot
 
     def self.parse_announcement_type(html)
       header = doc(html).css('div.MainHeader')[1]
-      header ? header.text.strip : 'Nepodarilo sa extrahovať nadpis detailu.'
+      header ? header.text.strip : 'Nepodarilo sa extrahovať typ oznamu.'
     end
 
     def self.parse_procurement_announcement(html)
