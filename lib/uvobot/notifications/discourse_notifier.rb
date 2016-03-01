@@ -45,11 +45,11 @@ module Uvobot
         body_messages = ["**Obstarávateľ:** #{announcement[:procurer]}",
                          "**Predmet obstarávania:** #{announcement[:procurement_subject]}",
                          build_detail_messages(detail),
-                         "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"]
+                         "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"].flatten(1)
 
         {
           title: announcement[:procurement_subject].to_s,
-          body: body_messages.flatten(1).join("  \n")
+          body: body_messages.join("  \n")
         }
       end
 
