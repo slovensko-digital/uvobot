@@ -3,6 +3,16 @@ require_relative 'notifier'
 module Uvobot
   module Notifications
     class DiscourseNotifier < Notifier
+      DETAIL_MESSAGES = {
+        announcement_type: '**Typ oznamu:** %s',
+        amount: '**Cena:** %s',
+        procurement_type: '**Druh postupu:** %s',
+        project_runtime: '**Trvanie projektu:** %s',
+        project_contract_runtime: '**Trvanie zmluvy, alebo lehota dodania :** %s',
+        proposal_placing_term: '**Lehota na predkladanie ponúk:** %s',
+        procurement_winner: "**Víťaz obstarávania:**  \n %s"
+      }.freeze
+
       def initialize(discourse_client, category, scraper)
         @client = discourse_client
         @category = category
@@ -34,26 +44,19 @@ module Uvobot
         detail = @scraper.get_announcement_detail(announcement[:link][:href])
         body_messages = ["**Obstarávateľ:** #{announcement[:procurer]}",
                          "**Predmet obstarávania:** #{announcement[:procurement_subject]}",
-                         detail_messages(detail),
-                         "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"]
+                         build_detail_messages(detail),
+                         "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"].flatten(1)
 
         {
           title: announcement[:procurement_subject].to_s,
-          body: body_messages.flatten(1).join("  \n")
+          body: body_messages.join("  \n")
         }
       end
 
-      def detail_messages(detail)
-        if detail
-          ["**Cena:** #{fallback_if_nil(detail[:amount])}",
-           "**Druh postupu:** #{fallback_if_nil(detail[:procurement_type])}"]
-        else
-          ['**Detaily sa nepodarilo extrahovať.**']
+      def build_detail_messages(details)
+        details.each_with_object([]) do |(type, value), messages|
+          messages << DETAIL_MESSAGES[type] % (value || 'Nepodarilo sa extrahovať')
         end
-      end
-
-      def fallback_if_nil(value)
-        value || 'Nepodarilo sa extrahovať'
       end
     end
   end
