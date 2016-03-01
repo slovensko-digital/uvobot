@@ -27,8 +27,8 @@ module Uvobot
 
     # rubocop:disable Metrics/MethodLength
     def self.parse_detail(html)
-      header_text = type_header_text(html)
-      result = case header_text
+      announcement_type = parse_announcement_type(html)
+      result = case announcement_type
                when 'OZNÁMENIE O VYHLÁSENÍ VEREJNÉHO OBSTARÁVANIA'
                  parse_procurement_announcement(html)
                when 'OZNÁMENIE O VÝSLEDKU VEREJNÉHO OBSTARÁVANIA'
@@ -42,11 +42,11 @@ module Uvobot
                else
                  {}
                end
-      result[:announcement_type] = header_text
+      result[:announcement_type] = announcement_type
       result
     end
 
-    def self.type_header_text(html)
+    def self.parse_announcement_type(html)
       header = doc(html).css('div.MainHeader')[1]
       header ? header.text.strip : 'Nepodarilo sa extrahovať nadpis detailu.'
     end
