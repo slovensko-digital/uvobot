@@ -1,3 +1,4 @@
+require 'spec_helper'
 require './lib/uvobot/discourse_client'
 
 RSpec.describe Uvobot::DiscourseClient do
