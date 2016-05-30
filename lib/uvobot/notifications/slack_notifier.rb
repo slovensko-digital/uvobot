@@ -5,8 +5,9 @@ require_relative 'notifier'
 module Uvobot
   module Notifications
     class SlackNotifier < Notifier
-      def initialize(slack_webhook, http_client = HTTParty)
+      def initialize(slack_webhook, slack_channel, http_client = HTTParty)
         @slack_webhook = slack_webhook
+        @slack_channel = slack_channel
         @http_client = http_client
       end
 
@@ -35,7 +36,7 @@ module Uvobot
       def payload(text)
         {
           text: text,
-          channel: '#general',
+          channel: @slack_channel,
           username: 'uvobot',
           icon_emoji: ':mag_right:'
         }.to_json

@@ -69,7 +69,8 @@ RSpec.describe Uvobot::UvoScraper do
         procurement_type: 'Verejná súťaž',
         announcement_type: "OZNÁMENIE O VYHLÁSENÍ VEREJNÉHO OBSTARÁVANIA",
         project_runtime: 'Obdobie v mesiacoch (od zadania zákazky) - Hodnota: 60',
-        proposal_placing_term: '21.03.2016 09:00'
+        proposal_placing_term: '21.03.2016 09:00',
+        procurement_id: 159707
       }
       expect(scraper.get_announcement_detail('dummy url')).to eq detail
     end
@@ -78,7 +79,10 @@ RSpec.describe Uvobot::UvoScraper do
       allow(curl_double).to receive_message_chain('get.body') do
         '<html><body><body/></html>'
       end
-      type_hash = { announcement_type: "Nepodarilo sa extrahovať typ oznamu." }
+      type_hash = {
+        announcement_type: "Nepodarilo sa extrahovať typ oznamu.",
+        procurement_id: nil,
+      }
       expect(scraper.get_announcement_detail('dummy url')).to eq type_hash
     end
   end

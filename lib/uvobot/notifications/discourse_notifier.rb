@@ -33,7 +33,8 @@ module Uvobot
           @client.create_topic(
             title: topic[:title],
             raw: topic[:body],
-            category: @category
+            category: @category,
+            procurement_id: topic[:procurement_id]
           )
         end
       end
@@ -42,20 +43,24 @@ module Uvobot
 
       def announcement_to_topic(announcement)
         detail = @scraper.get_announcement_detail(announcement[:link][:href])
-        body_messages = ["**Obstarávateľ:** #{announcement[:procurer]}",
-                         "**Predmet obstarávania:** #{announcement[:procurement_subject]}",
-                         build_detail_messages(detail),
-                         "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"].flatten(1)
+        body_messages = [
+          "**Obstarávateľ:** #{announcement[:procurer]}",
+          "**Predmet obstarávaniaA:** #{announcement[:procurement_subject]}",
+          build_detail_messages(detail),
+          "**Zdroj:** [#{announcement[:link][:text]}](#{announcement[:link][:href]})"
+        ].flatten(1)
 
         {
-          title: announcement[:procurement_subject].to_s,
-          body: body_messages.join("  \n")
+          title: announcement.fetch(:procurement_subject),
+          body: body_messages.join("  \n"),
+          procurement_id: detail.fetch(:procurement_id)
         }
       end
 
       def build_detail_messages(details)
-        details.each_with_object([]) do |(type, value), messages|
-          messages << DETAIL_MESSAGES[type] % (value || 'Nepodarilo sa extrahovať')
+        DETAIL_MESSAGES.each_with_object([]) do |(type, template), messages|
+          value = details[type]
+          messages << (template % value) if value
         end
       end
     end

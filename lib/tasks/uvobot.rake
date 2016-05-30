@@ -10,7 +10,10 @@ namespace :uvobot do
     )
 
     notifiers = [
-        Uvobot::Notifications::SlackNotifier.new(ENV.fetch('UVOBOT_SLACK_WEBHOOK')),
+        Uvobot::Notifications::SlackNotifier.new(
+            ENV.fetch('UVOBOT_SLACK_WEBHOOK'),
+            ENV.fetch('UVOBOT_SLACK_CHANNEL')
+        ),
         Uvobot::Notifications::DiscourseNotifier.new(
             discourse_client,
             ENV.fetch('DISCOURSE_TARGET_CATEGORY'),

@@ -43,6 +43,7 @@ module Uvobot
                  {}
                end
       result[:announcement_type] = announcement_type
+      result[:procurement_id] = parse_procurement_id(html)
       result
     end
 
@@ -87,6 +88,15 @@ module Uvobot
         amount: parse_contract_amount(html),
         procurement_winner: parse_contract_winner(html)
       }
+    end
+
+    def self.parse_procurement_id(html)
+      doc(html).css('#procurer table tr').each do |row|
+        heading = row.css('th')[0].text
+        return Integer(row.css('td a')[0][:href].split('/').last) if heading == 'Zákazka:'
+      end
+
+      nil
     end
 
     def self.parse_amount(html)

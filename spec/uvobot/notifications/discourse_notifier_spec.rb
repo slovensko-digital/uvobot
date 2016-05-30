@@ -3,18 +3,17 @@ require './lib/uvobot/notifications/discourse_notifier'
 RSpec.describe Uvobot::Notifications::DiscourseNotifier do
   let(:client_double) { double }
   let(:scraper_double) { double }
-  let(:client_exception_class_double) { double }
   let(:notifier) { Uvobot::Notifications::DiscourseNotifier.new(client_double, 'dummy category', scraper_double) }
 
   describe '.no_announcements_found' do
     it 'does nothing' do
-      expect(notifier.no_announcements_found).to eq nil
+      expect(notifier.no_announcements_found).to be_nil
     end
   end
 
   describe '.new_issue_not_published' do
     it 'does nothing' do
-      expect(notifier.new_issue_not_published).to eq nil
+      expect(notifier.new_issue_not_published).to be_nil
     end
   end
 
@@ -27,10 +26,12 @@ RSpec.describe Uvobot::Notifications::DiscourseNotifier do
           procurement_type: nil,
           project_runtime: 'runtime',
           proposal_placing_term: 'term',
-          procurement_winner: 'winner'
+          procurement_winner: 'winner',
+          procurement_id: 123,
         }
       end
-      announcements = [{ link: { href: 'href', text: 'text' },
+      announcements = [{
+                         link: { href: 'href', text: 'text' },
                          procurer: 'procurer',
                          procurement_subject: 'subject'
                        }]
@@ -38,11 +39,13 @@ RSpec.describe Uvobot::Notifications::DiscourseNotifier do
       params = {
         title: 'subject',
         raw: "**Obstarávateľ:** procurer  \n**Predmet obstarávania:** subject  \n**Cena:** 1000 EUR" \
-             "  \n**Druh postupu:** Nepodarilo sa extrahovať  \n**Trvanie projektu:** runtime" \
+             "  \n**Trvanie projektu:** runtime" \
              "  \n**Lehota na predkladanie ponúk:** term  \n**Víťaz obstarávania:**  \n winner" \
              "  \n**Zdroj:** [text](href)",
-        category: 'dummy category'
+        category: 'dummy category',
+        procurement_id: 123
       }
+
       expect(client_double).to receive(:create_topic).with(params)
 
       notifier.matching_announcements_found('page info', announcements)
