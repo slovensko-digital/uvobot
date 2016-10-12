@@ -4,3 +4,5 @@
 
 
 Notifikácie pre chat www.slack.com a www.discourse.org fórum z Úradu pre verejné obstarávanie o obstarávaniach v IT sektore.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
