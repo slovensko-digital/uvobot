@@ -1,4 +1,25 @@
 {
-	"name": "Slovensko.Digital Uvobot",	
-	"logo": "https://platforma-slovensko-digital-files.s3-eu-central-1.amazonaws.com/original/1X/046d18ffeb53be1c4114914c562b278bfd495635.png"
+	"name": "Slovensko.Digital Uvobot",
+	"logo": "https://platforma-slovensko-digital-files.s3-eu-central-1.amazonaws.com/original/1X/046d18ffeb53be1c4114914c562b278bfd495635.png",
+	"env": {
+		"UVOBOT_SLACK_WEBHOOK": {
+			"description": "Webhook URL do Slacku",
+			"required": false
+		},
+		"DISCOURSE_URL": {
+			"required": false
+		},
+		"DISCOURSE_API_KEY": {
+			"required": false
+		},
+		"DISCOURSE_USER": {
+			"required": false
+		},
+		"DISCOURSE_TARGET_CATEGORY": {
+			"required": false
+		}
+	},
+	"addons": [
+		"scheduler"
+	]
 }
