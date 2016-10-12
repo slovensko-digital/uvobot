@@ -11,4 +11,4 @@ Notifikácie pre chat www.slack.com a www.discourse.org fórum z Úradu pre vere
 
 Potom do Heroku Scheduler dať príkaz `bundle exec uvobot.rb`.
 
-https://cloud.githubusercontent.com/assets/26342/19301925/3d98ab26-9062-11e6-99e3-9b62d458ac8c.png
+![](https://cloud.githubusercontent.com/assets/26342/19301925/3d98ab26-9062-11e6-99e3-9b62d458ac8c.png)
