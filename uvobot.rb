@@ -23,6 +23,8 @@ if ENV['DISCOURSE_URL']
   )
 end
 
+notifiers << Uvobot::Notifications::ConsoleNotifier.new
+
 Uvobot::Worker.new(
   Uvobot::UvoScraper.new,
   notifiers
