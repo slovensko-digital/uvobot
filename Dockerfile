@@ -9,7 +9,6 @@ WORKDIR /app
 
 # Bundle and cache Ruby gems
 COPY Gemfile* ./
-RUN bundle update --bundler
 RUN bundle config set deployment true
 RUN bundle config set without development:test
 RUN bundle install
@@ -20,4 +19,4 @@ RUN mkdir -p tmp/pids
 COPY . .
 
 # Run application by default
-CMD ["ruby", "uvobot.rb"]
+CMD ["bundle", "exec", "clockwork", "config/clock.rb"]
