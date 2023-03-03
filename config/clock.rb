@@ -13,5 +13,5 @@ module Clockwork
     Rake::Task[job].invoke
   end
 
-  every(1.day, 'uvobot:run', at: '14:00')
+  every(1.day, 'uvobot:run', at: '13:00')
 end
