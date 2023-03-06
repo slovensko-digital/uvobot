@@ -41,6 +41,7 @@ gem 'httparty'
 gem 'discourse_api'
 gem 'abstract_type'
 
+gem 'webdrivers', '~> 5.0'
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.

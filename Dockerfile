@@ -2,6 +2,8 @@ FROM ruby:2.7.2
 
 # Install packages
 RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
 
 # Set working directory
 RUN mkdir /app

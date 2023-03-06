@@ -1,5 +1,7 @@
 require 'httparty'
 require_relative 'uvo_parser'
+require 'webdrivers/chromedriver'
+require 'selenium-webdriver'
 
 module Uvobot
   class UvoScraper
@@ -14,6 +16,12 @@ module Uvobot
     def initialize(parser = Uvobot::UvoParser, html_client = HTTParty)
       @parser = parser
       @html_client = html_client
+
+      options = Selenium::WebDriver::Chrome::Options.new
+      options.add_argument('--headless')
+      options.add_argument('--no-sandbox')
+      @driver = Selenium::WebDriver::Driver.for(:chrome, options: options)
+      @driver.manage.timeouts.implicit_wait = 30
     end
 
     def issue_ready?(release_date)
@@ -36,7 +44,10 @@ module Uvobot
       from = release_date.strftime('%d.%m.%Y')
       to = release_date.next_day.strftime('%d.%m.%Y')
       code = IT_CONTRACTS_CODES.join('+')
-      html = @html_client.get("#{SEARCH_URL}?a=listNotice&kcpv=#{code}&dzOd=#{from}&dzDo=#{to}", verify: false).body
+
+      @driver.get("#{SEARCH_URL}?a=listNotice&kcpv=#{code}&dzOd=#{from}&dzDo=#{to}")
+      @driver.find_element(:id, 'lists-table')
+      html = @driver.page_source
 
       [@parser.parse_page_info(html), @parser.parse_announcements(html, BULLETIN_URL)]
     end

@@ -5,10 +5,6 @@
 
 Notifikácie pre chat www.slack.com a www.discourse.org fórum z Úradu pre verejné obstarávanie o obstarávaniach v IT sektore.
 
-## Nasadenie na Heroku
+## Nasadenie cez Docker
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-Potom do Heroku Scheduler dať príkaz `ruby uvobot.rb`.
-
-![](https://cloud.githubusercontent.com/assets/26342/19302582/f82cfd8c-9064-11e6-8fd2-a349331add5f.png)
+Build docker obrazu pomocou `docker build -t my_uvobot .` . Pri spustení je potrebné mať nastavené 
