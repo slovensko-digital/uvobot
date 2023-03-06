@@ -1,11 +1,13 @@
 require 'httparty'
 require_relative 'uvo_parser'
+require 'webdrivers/chromedriver'
+require 'selenium-webdriver'
 
 module Uvobot
   class UvoScraper
     BULLETIN_URL = 'https://www.uvo.gov.sk'.freeze
-    SEARCH_URL = "#{BULLETIN_URL}/vestnik/oznamenia/zoznam".freeze
-    NEW_ISSUE_URL = "#{BULLETIN_URL}/vestnik-a-registre/vestnik-590.html".freeze
+    SEARCH_URL = "#{BULLETIN_URL}/vestnik-a-registre/vestnik/oznamenia".freeze
+    NEW_ISSUE_URL = "#{BULLETIN_URL}/vestnik-a-registre/vestnik".freeze
     IT_CONTRACTS_CODES = '48000000-8 72000000-5 48820000-2 72250000-2 72260000-5 72263000-6 72222300-0 72261000-2 48800000-6 72212000-4 72267000-4 72265000-0 48100000-9 72310000-1 72267100-0 72262000-9 72268000-1 72200000-7 72600000-6 51610000-1 50312600-1 42962000-7 48600000-4 72253200-5 72300000-8 48190000-6 72400000-4 72266000-7 48821000-9 72320000-4 72240000-9 72230000-6 72227000-2 72254000-0 48900000-7 72700000-7'.split(' ').freeze
 
     class InvalidIssuePage < StandardError
@@ -14,6 +16,12 @@ module Uvobot
     def initialize(parser = Uvobot::UvoParser, html_client = HTTParty)
       @parser = parser
       @html_client = html_client
+
+      options = Selenium::WebDriver::Chrome::Options.new
+      options.add_argument('--headless')
+      options.add_argument('--no-sandbox')
+      @driver = Selenium::WebDriver::Driver.for(:chrome, options: options)
+      @driver.manage.timeouts.implicit_wait = 30
     end
 
     def issue_ready?(release_date)
@@ -36,7 +44,10 @@ module Uvobot
       from = release_date.strftime('%d.%m.%Y')
       to = release_date.next_day.strftime('%d.%m.%Y')
       code = IT_CONTRACTS_CODES.join('+')
-      html = @html_client.get("#{SEARCH_URL}?kcpv=#{code}&dzOd=#{from}&dzDo=#{to}", verify: false).body
+
+      @driver.get("#{SEARCH_URL}?a=listNotice&kcpv=#{code}&dzOd=#{from}&dzDo=#{to}")
+      @driver.find_element(:id, 'lists-table')
+      html = @driver.page_source
 
       [@parser.parse_page_info(html), @parser.parse_announcements(html, BULLETIN_URL)]
     end

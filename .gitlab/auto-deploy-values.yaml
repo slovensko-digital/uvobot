@@ -1,0 +1,24 @@
+image:
+  secrets:
+  - name: skdigital-bonet-registry
+service:
+  enabled: false
+ingress:
+  enabled: false
+# add later when we have a database
+# application:
+  # migrateCommand: ["bundle", "exec", "rails", "db:migrate"]
+livenessProbe:
+  initialDelaySeconds: 10
+  timeoutSeconds: 10
+  probeType: "exec"
+  command:
+    - "pgrep"
+    - "bundle"
+readinessProbe:
+  initialDelaySeconds: 10
+  timeoutSeconds: 10
+  probeType: "exec"
+  command:
+    - "pgrep"
+    - "bundle"

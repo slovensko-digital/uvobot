@@ -5,10 +5,10 @@
 
 Notifikácie pre chat www.slack.com a www.discourse.org fórum z Úradu pre verejné obstarávanie o obstarávaniach v IT sektore.
 
-## Nasadenie na Heroku
+## Nasadenie cez Docker
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+Build docker obrazu pomocou `docker build -t my_uvobot .`. Pri spustení kontajnera je potrebné mať nastavené env `RAILS_ENV=production`.
 
-Potom do Heroku Scheduler dať príkaz `ruby uvobot.rb`.
+Slack a Discourse integrácie sa nastavujú cez `UVOBOT_SLACK_WEBHOOK` a `DISCOURSE_URL`, `DISCOURSE_API_KEY`, `DISCOURSE_USER` a `DISCOURSE_TARGET_CATEGORY`. Intregrácie, pre ktoré nie sú nastavené envs, sa nevykonajú a uvobot vypíše nájdené výsledky iba do konzoly.
 
-![](https://cloud.githubusercontent.com/assets/26342/19302582/f82cfd8c-9064-11e6-8fd2-a349331add5f.png)
+Čas spustenia `15:00` je možné upraviť v `config/clock.rb`.
