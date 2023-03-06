@@ -12,12 +12,14 @@ module Uvobot
     end
 
     def self.parse_table_line(tr_node, bulletin_url)
-      a_parts = tr_node.css('td').first.text.split("\n").map(&:strip)
+      link_text = tr_node.css('td > text()').first.text.strip
+      procurer = tr_node.css('td strong').first.text
+      subject = tr_node.css('td span').first.text
 
       {
-        link: { text: a_parts[0], href: parse_detail_link(tr_node, bulletin_url) },
-        procurer: a_parts[1],
-        procurement_subject: a_parts[2]
+        link: { text: link_text, href: parse_detail_link(tr_node, bulletin_url) },
+        procurer: procurer,
+        procurement_subject: subject
       }
     end
 
