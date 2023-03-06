@@ -184,7 +184,7 @@ module Uvobot
 
     def self.parse_page_info(html)
       page_info_node = doc(html).css('div.pag-info span').first
-      page_info_node.nil? ? nil : page_info_node.text.strip
+      page_info_node.nil? ? nil : page_info_node.text.strip.split(' ').join(' ')
     end
 
     def self.parse_issue_header(html)
