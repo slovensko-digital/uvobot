@@ -1,6 +1,5 @@
 require 'httparty'
 require_relative 'uvo_parser'
-require 'webdrivers/chromedriver'
 require 'selenium-webdriver'
 
 module Uvobot
