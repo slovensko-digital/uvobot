@@ -7,7 +7,9 @@ namespace :uvobot do
     notifiers = []
 
     if ENV['UVOBOT_SLACK_WEBHOOK']
-      notifiers << Uvobot::Notifications::SlackNotifier.new(ENV.fetch('UVOBOT_SLACK_WEBHOOK'))
+      ENV.fetch('UVOBOT_SLACK_WEBHOOK').split(',').each do |url|
+        notifiers << Uvobot::Notifications::SlackNotifier.new(url)
+      end
     end
 
     if ENV['DISCOURSE_URL']
