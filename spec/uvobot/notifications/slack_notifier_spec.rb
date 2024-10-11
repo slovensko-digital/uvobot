@@ -2,7 +2,7 @@ require './lib/uvobot/notifications/slack_notifier'
 
 RSpec.describe Uvobot::Notifications::SlackNotifier do
   let(:curl_double) { double }
-  let(:notifier) { Uvobot::Notifications::SlackNotifier.new('slack.com', curl_double) }
+  let(:notifier) { Uvobot::Notifications::SlackNotifier.new('slack.com', 'general', curl_double) }
 
   describe '.new_issue_not_published' do
     it 'sends correct payload to slack' do
