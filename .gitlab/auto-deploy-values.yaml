@@ -22,3 +22,8 @@ readinessProbe:
   command:
     - "pgrep"
     - "bundle"
+resources:
+  requests:
+    memory: 700Mi
+  limits:
+    memory: 750Mi
