@@ -1,10 +1,10 @@
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 
 Style/Documentation:
   Enabled: false
 
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Exclude:
     - Rakefile
 
@@ -16,9 +16,9 @@ Style/SignalException:
     - semantic
 
 Metrics/ClassLength:
-  CountComments: false  # count full line comments?
+  CountComments: false # count full line comments?
   Max: 200
 
 Metrics/ModuleLength:
-  CountComments: false  # count full line comments?
+  CountComments: false # count full line comments?
   Max: 200

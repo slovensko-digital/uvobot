@@ -12,15 +12,10 @@ module Uvobot
     class InvalidIssuePage < StandardError
     end
 
-    def initialize(parser = Uvobot::UvoParser, html_client = HTTParty)
+    def initialize(parser = Uvobot::UvoParser, html_client = HTTParty, driver: nil)
       @parser = parser
       @html_client = html_client
-
-      options = Selenium::WebDriver::Chrome::Options.new
-      options.add_argument('--headless')
-      options.add_argument('--no-sandbox')
-      @driver = Selenium::WebDriver::Driver.for(:chrome, options: options)
-      @driver.manage.timeouts.implicit_wait = 30
+      @driver = driver
     end
 
     def issue_ready?(release_date)
@@ -44,9 +39,9 @@ module Uvobot
       to = release_date.next_day.strftime('%d.%m.%Y')
       code = IT_CONTRACTS_CODES.join('+')
 
-      @driver.get("#{SEARCH_URL}?a=listNotice&kcpv=#{code}&dzOd=#{from}&dzDo=#{to}")
-      @driver.find_element(:id, 'lists-table')
-      html = @driver.page_source
+      driver.get("#{SEARCH_URL}?a=listNotice&kcpv=#{code}&dzOd=#{from}&dzDo=#{to}")
+      driver.find_element(id: 'lists-table')
+      html = driver.page_source
 
       [@parser.parse_page_info(html), @parser.parse_announcements(html, BULLETIN_URL)]
     end
@@ -54,6 +49,23 @@ module Uvobot
     def get_announcement_detail(url)
       html = @html_client.get(url, verify: false).body
       @parser.parse_detail(html)
+    end
+
+    private
+
+    # Built lazily so that instantiating the scraper (e.g. in tests)
+    # does not require a Chrome browser.
+    def driver
+      @driver ||= build_driver
+    end
+
+    def build_driver
+      options = Selenium::WebDriver::Chrome::Options.new
+      options.add_argument('--headless')
+      options.add_argument('--no-sandbox')
+      driver = Selenium::WebDriver.for(:chrome, options: options)
+      driver.manage.timeouts.implicit_wait = 30
+      driver
     end
   end
 end

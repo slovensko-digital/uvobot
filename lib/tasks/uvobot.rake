@@ -5,6 +5,7 @@ namespace :uvobot do
     require_relative '../uvobot'
 
     notifiers = []
+    scraper = Uvobot::UvoScraper.new
 
     if ENV['UVOBOT_SLACK_WEBHOOK']
       ENV.fetch('UVOBOT_SLACK_WEBHOOK').split(',').each do |value|
@@ -22,14 +23,14 @@ namespace :uvobot do
       notifiers << Uvobot::Notifications::DiscourseNotifier.new(
         discourse_client,
         ENV.fetch('DISCOURSE_TARGET_CATEGORY'),
-        Uvobot::UvoScraper.new
+        scraper
       )
     end
 
     notifiers << Uvobot::Notifications::ConsoleNotifier.new
 
     Uvobot::Worker.new(
-      Uvobot::UvoScraper.new,
+      scraper,
       notifiers
     ).run(Date.today)
 
