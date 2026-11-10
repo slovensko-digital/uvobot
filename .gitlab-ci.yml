@@ -1,9 +1,20 @@
-stages:
-  - test
-  - build
+image: alpine:latest
 
 variables:
   BUNDLE_PATH: vendor/bundle
+  DOCKER_DRIVER: overlay2
+  DOCKER_BUILDKIT: 0
+  AUTO_DEVOPS_BUILD_CACHE: registry
+  AUTO_DEPLOY_IMAGE_VERSION: 'v2.47.0'
+  CONTAINER_SCANNING_DISABLED: 'True'
+
+stages:
+  - test
+  - build
+  - deploy
+
+include:
+  - template: Jobs/Build.gitlab-ci.yml
 
 rspec:
   stage: test
@@ -19,17 +30,30 @@ rspec:
     - bundle exec rspec
     - CI=1 RAILS_ENV=test bundle exec rails runner 'puts "boot ok"'
 
-docker-build:
-  stage: build
-  image: docker:stable
-  services:
-    - docker:stable-dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_TLS_CERTDIR: ""
-  before_script:
-    - docker info
+production:
+  extends: .auto-deploy
+  stage: deploy
   script:
-    - docker build -t uvobot:$CI_COMMIT_SHORT_SHA .
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy use_kube_context || true
+    - auto-deploy ensure_namespace
+    - auto-deploy create_secret
+    - auto-deploy deploy
+    - auto-deploy persist_environment_url
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  artifacts:
+    paths: [environment_url.txt]
+    when: always
+  allow_failure: false
   rules:
+    - if: '($CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == "") && ($KUBECONFIG == null || $KUBECONFIG == "")'
+      when: never
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: always
+
+.auto-deploy:
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
+  dependencies: [build]
