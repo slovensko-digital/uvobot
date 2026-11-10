@@ -38,9 +38,12 @@ RSpec.describe Uvobot::UvoScraper do
 
   describe '.get_announcements' do
     it 'returns scraped announcements and page info' do
-      allow(curl_double).to receive_message_chain('get.body') do
-        File.read('./spec/support/fixtures/announcements.html')
-      end
+      html = File.read('./spec/support/fixtures/announcements.html')
+      fake_driver = double('driver')
+      allow(fake_driver).to receive(:get)
+      allow(fake_driver).to receive(:find_element)
+      allow(fake_driver).to receive(:page_source).and_return(html)
+      scraper = Uvobot::UvoScraper.new(Uvobot::UvoParser, curl_double, driver: fake_driver)
 
       page_info, announcements = scraper.get_announcements(Date.new(2016, 1, 29))
 
@@ -48,11 +51,15 @@ RSpec.describe Uvobot::UvoScraper do
       expect(announcements.count).to eq 3
       announcement = announcements.first
 
-      href = 'https://www.uvo.gov.sk/vestnik-a-registre/vestnik/oznamenie/detail/326833?cHash=381e97f7c0e9ae95737d7282e3d329f8'
-      link = { href: href, text: '2422 - VZT' }
+      href = 'https://www.uvo.gov.sk/vestnik/oznamenie/detail/327310?page=1&limit=20&sort=datumZverejnenia'\
+        '&sort-dir=DESC&ext=1&cisloOznamenia=&text=&year=0&dzOd=02.02.2016&dzDo=02.02.2016&cvestnik=&'\
+        'doznamenia=-1&dzakazky=-1&dpostupu=-1&mdodania=&kcpv=48000000-8+72000000-5&opb=&szfeu=&flimit=-1'\
+        '&nobstaravatel=&nzakazky='
+      link = { href: href, text: '2631 - ZSS' }
       expect(announcement[:link]).to eq link
-      expect(announcement[:procurer]).to eq 'Ministerstvo spravodlivosti Slovenskej republiky'
-      expect(announcement[:procurement_subject]).to eq 'Dodávka HW, SW a súvisiacich služieb'
+      expect(announcement[:procurer]).to eq 'Slovenský plynárenský priemysel, akciová spoločnosť'
+      expect(announcement[:procurement_subject]).to eq 'Dodávka, implementácia a následné služby k SW riešeniu '\
+        'Treasury a Risk management'
     end
   end
 

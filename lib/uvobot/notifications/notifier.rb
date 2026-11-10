@@ -1,13 +1,19 @@
-require 'abstract_type'
+require_relative 'notifier'
 
 module Uvobot
   module Notifications
     class Notifier
-      include AbstractType
+      def matching_announcements_found(_page_info, _announcements)
+        raise NotImplementedError, "#{self.class} must implement ##{__method__}"
+      end
 
-      abstract_method :matching_announcements_found
-      abstract_method :no_announcements_found
-      abstract_method :new_issue_not_published
+      def no_announcements_found
+        raise NotImplementedError, "#{self.class} must implement ##{__method__}"
+      end
+
+      def new_issue_not_published
+        raise NotImplementedError, "#{self.class} must implement ##{__method__}"
+      end
     end
   end
 end
