@@ -1,4 +1,5 @@
 require 'nokogiri'
+require_relative 'eforms_parser'
 
 module Uvobot
   class UvoParser
@@ -13,8 +14,8 @@ module Uvobot
 
     def self.parse_table_line(tr_node, bulletin_url)
       link_text = tr_node.css('td > text()').first.text.strip
-      procurer = tr_node.css('td strong').first.text
-      subject = tr_node.css('td span').first.text
+      procurer = normalize_whitespace(tr_node.css('td strong').first.text)
+      subject = normalize_whitespace(tr_node.css('td span').first.text)
 
       {
         link: { text: link_text, href: parse_detail_link(tr_node, bulletin_url) },
@@ -29,6 +30,9 @@ module Uvobot
 
     # rubocop:disable Metrics/MethodLength
     def self.parse_detail(html)
+      eforms = doc(html).at_css('#output-container')
+      return EformsParser.new(eforms).parse if eforms&.at_css('h3.title')
+
       announcement_type = parse_announcement_type(html)
       result = case announcement_type
                when 'OZNÁMENIE O VYHLÁSENÍ VEREJNÉHO OBSTARÁVANIA'
@@ -177,9 +181,7 @@ module Uvobot
     end
 
     def self.normalize_whitespace(text)
-      result = text.clone
-      result.gsub!(/(\s){2,}/, '\\1')
-      result.strip
+      text.gsub(/[[:space:]]+/, ' ').strip
     end
 
     def self.parse_page_info(html)
@@ -197,6 +199,10 @@ module Uvobot
       no_issue_found_message = h_doc.xpath('//p[starts-with(text(), "Vestník podla zadaných")]').first
 
       header || no_issue_found_message
+    end
+
+    def self.announcements_page_valid?(html)
+      !doc(html).at_css('#lists-table').nil?
     end
 
     def self.doc(html)

@@ -1,6 +1,5 @@
 require 'httparty'
 require_relative 'uvo_parser'
-require 'selenium-webdriver'
 
 module Uvobot
   class UvoScraper
@@ -12,16 +11,21 @@ module Uvobot
     class InvalidIssuePage < StandardError
     end
 
-    def initialize(parser = Uvobot::UvoParser, html_client = HTTParty, driver: nil)
+    class InvalidAnnouncementsPage < StandardError
+    end
+
+    class RequestFailed < StandardError
+    end
+
+    def initialize(parser = Uvobot::UvoParser, html_client = HTTParty)
       @parser = parser
       @html_client = html_client
-      @driver = driver
     end
 
     def issue_ready?(release_date)
       search_query = "?date=#{release_date.strftime('%d.%m.%Y')}"
 
-      html = @html_client.get(NEW_ISSUE_URL + search_query, verify: false).body
+      html = fetch_html(NEW_ISSUE_URL + search_query)
       result = header_includes_date?(html, release_date)
 
       raise InvalidIssuePage if !result && !@parser.issue_page_valid?(html)
@@ -39,33 +43,25 @@ module Uvobot
       to = release_date.next_day.strftime('%d.%m.%Y')
       code = IT_CONTRACTS_CODES.join('+')
 
-      driver.get("#{SEARCH_URL}?a=listNotice&kcpv=#{code}&dzOd=#{from}&dzDo=#{to}")
-      driver.find_element(id: 'lists-table')
-      html = driver.page_source
+      html = fetch_html("#{SEARCH_URL}?a=listNotice&kcpv=#{code}&dzOd=#{from}&dzDo=#{to}")
+      unless @parser.announcements_page_valid?(html)
+        raise InvalidAnnouncementsPage, 'UVO announcements page is missing #lists-table'
+      end
 
       [@parser.parse_page_info(html), @parser.parse_announcements(html, BULLETIN_URL)]
     end
 
     def get_announcement_detail(url)
-      html = @html_client.get(url, verify: false).body
+      html = fetch_html(url)
       @parser.parse_detail(html)
     end
 
     private
 
-    # Built lazily so that instantiating the scraper (e.g. in tests)
-    # does not require a Chrome browser.
-    def driver
-      @driver ||= build_driver
-    end
-
-    def build_driver
-      options = Selenium::WebDriver::Chrome::Options.new
-      options.add_argument('--headless')
-      options.add_argument('--no-sandbox')
-      driver = Selenium::WebDriver.for(:chrome, options: options)
-      driver.manage.timeouts.implicit_wait = 30
-      driver
+    def fetch_html(url)
+      response = @html_client.get(url, verify: false, timeout: 30)
+      raise RequestFailed, "UVO request failed (HTTP #{response.code}): #{url}" unless response.code == 200
+      response.body
     end
   end
 end
