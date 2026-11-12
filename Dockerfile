@@ -1,9 +1,10 @@
 FROM ruby:4.0.9-slim
 
-# Install compiler and pg headers for native gems.
+# Install native gem build dependencies and pgrep for Kubernetes probes.
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    procps \
   && rm -rf /var/lib/apt/lists/*
 
 ENV RAILS_ENV="production" \
