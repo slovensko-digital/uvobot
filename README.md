@@ -1,12 +1,12 @@
 # UVObot
 
-Ruby 4.0.9 / Rails 8.1.4.
+Ruby 4.0.10 / Rails 8.1.4.
 
 Notifikácie pre chat www.slack.com a www.discourse.org fórum z Úradu pre verejné obstarávanie o obstarávaniach v IT sektore.
 
 ## Vývoj
 
-Požiadavky: Ruby 4.0.9 (pozri `.ruby-version`), PostgreSQL.
+Požiadavky: Ruby 4.0.10 (pozri `.ruby-version`), PostgreSQL.
 
 ```sh
 bundle install
