@@ -1,4 +1,4 @@
-FROM ruby:4.0.9-slim
+FROM ruby:4.0.10-slim
 
 # Install native gem build dependencies and pgrep for Kubernetes probes.
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
